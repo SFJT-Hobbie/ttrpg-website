@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+@import "tailwindcss";
+
+body {
+  background-color: #1a1513;
+  color: #d9c7a5;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.grid-stack {
+  background-size: 20% 20%; /* each cell is 20% of width/height */
+}
+
+main {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  overflow-y: auto; /* Allow vertical scrolling */
+  min-height: 100vh; /* Ensure main content takes full height */
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease; /* Smooth transition for sidebar toggle */
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}

@@ -1,0 +1,77 @@
+/* Customize Quill editor for darkfantasy theme */
+.ql-container {
+  background-color: #2a1e1e; /* darkfantasy-tertiary */
+  color: #d4c4a7; /* darkfantasy-neutral */
+  border: 1px solid #8a7b5e; /* darkfantasy border */
+  border-radius: 0 0 4px 4px;
+  font-family: 'Cinzel', serif;
+}
+
+.ql-toolbar.ql-snow {
+  background-color: #3c2f2f; /* darkfantasy-primary */
+  border: 1px solid #8a7b5e;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  font-family: 'Cinzel', serif;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+  margin-right: 10px;
+}
+
+.ql-toolbar.ql-snow button,
+.ql-toolbar.ql-snow .ql-picker {
+  color: #d4c4a7; /* darkfantasy-neutral */
+}
+
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow button.ql-active,
+.ql-toolbar.ql-snow .ql-picker-label:hover,
+.ql-toolbar.ql-snow .ql-picker-item:hover {
+  color: #661318; /* darkfantasy-secondary */
+  background-color: #2a1e1e; /* darkfantasy-tertiary */
+}
+
+.ql-toolbar.ql-snow .ql-picker-label,
+.ql-toolbar.ql-snow .ql-picker-item {
+  color: #d4c4a7;
+  font-family: 'Cinzel', serif;
+}
+
+.ql-toolbar.ql-snow .ql-stroke {
+  stroke: #d4c4a7;
+}
+
+.ql-toolbar.ql-snow .ql-stroke:hover,
+.ql-toolbar.ql-snow .ql-stroke.ql-active {
+  stroke: #661318;
+}
+
+.ql-toolbar.ql-snow .ql-fill {
+  fill: #d4c4a7;
+}
+
+.ql-toolbar.ql-snow .ql-fill:hover,
+.ql-toolbar.ql-snow .ql-fill.ql-active {
+  fill: #661318;
+}
+
+.ql-editor {
+  min-height: 200px;
+}
+
+.ql-editor.ql-blank::before {
+  color: #d4c4a7; /* darkfantasy-neutral */
+  font-family: 'Cinzel', serif;
+}
+
+
+/* Ensure prose content matches theme */
+.prose {
+  color: #d4c4a7;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-family: 'Cinzel', serif;
+  color: #d4c4a7;
+}

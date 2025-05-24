@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --darkfantasy-primary: #2a1f1d;
+  --darkfantasy-secondary: #661318;
+  --darkfantasy-tertiary: #3c2f2f;
+  --darkfantasy-highlight: #8a7b5e;
+  --darkfantasy-neutral: #d9c7a5;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Cinzel';
+    src: url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+  }
+}
+
+@layer utilities {
+  .font-darkfantasy {
+    font-family: 'Cinzel', serif;
+  }
+  .shadow-darkfantasy {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  .bg-darkfantasy-primary {
+    background-color: var(--darkfantasy-primary);
+  }
+  .bg-darkfantasy-secondary {
+    background-color: var(--darkfantasy-secondary);
+  }
+  .bg-darkfantasy-tertiary {
+    background-color: var(--darkfantasy-tertiary);
+  }
+  .text-darkfantasy-highlight {
+    color: var(--darkfantasy-highlight);
+  }
+  .text-darkfantasy-neutral {
+    color: var(--darkfantasy-neutral);
+  }
+  .border-darkfantasy-primary {
+    border-color: var(--darkfantasy-primary);
+  }
+  .hover\:bg-darkfantasy-secondary\/80:hover {
+    background-color: rgba(102, 19, 24, 0.8); /* #661318 with 80% opacity */
+  }
+}

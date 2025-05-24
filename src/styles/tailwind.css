@@ -1,0 +1,68 @@
+:root {
+  --darkfantasy-primary: #2a1f1d; /* Dark Ashen Gray */
+  --darkfantasy-secondary: #661318; /* Muted Blood Red */
+  --darkfantasy-tertiary: #3c2f2f; /* Worn Leather Brown */
+  --darkfantasy-highlight: #8a7b5e; /* Dull Gold */
+  --darkfantasy-neutral: #d9c7a5; /* Aged Parchment */
+  --darkfantasy-shadow: rgba(0, 0, 0, 0.5);
+  --font-darkfantasy: "Cinzel", "Times New Roman", serif;
+  --shadow-darkfantasy: 0 4px 8px var(--darkfantasy-shadow);
+  --border-darkfantasy: 1px solid var(--darkfantasy-tertiary);
+}
+
+@layer base {
+  @font-face {
+    font-family: "Cinzel";
+    src: url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap");
+  }
+
+  :root {
+    --background: var(--darkfantasy-primary);
+    --foreground: var(--darkfantasy-neutral);
+  }
+
+  .dark {
+    --background: #1a1513; /* Darker for dark mode */
+    --foreground: #e8d8b0; /* Lighter parchment */
+  }
+}
+
+@layer utilities {
+  .font-darkfantasy {
+    font-family: var(--font-darkfantasy);
+  }
+  .shadow-darkfantasy {
+    box-shadow: var(--shadow-darkfantasy);
+  }
+  .border-darkfantasy {
+    border: var(--border-darkfantasy);
+  }
+  .bg-darkfantasy-primary {
+    background-color: var(--darkfantasy-primary);
+  }
+  .bg-darkfantasy-secondary {
+    background-color: var(--darkfantasy-secondary);
+  }
+  .bg-darkfantasy-tertiary {
+    background-color: var(--darkfantasy-tertiary);
+  }
+  .text-darkfantasy-highlight {
+    color: var(--darkfantasy-highlight);
+  }
+  .text-darkfantasy-neutral {
+    color: var(--darkfantasy-neutral);
+  }
+  .hover\:bg-darkfantasy-secondary\/80:hover {
+    background-color: rgba(102, 19, 24, 0.8);
+  }
+  .hover\:text-darkfantasy-highlight:hover {
+    color: var(--darkfantasy-highlight);
+  }
+  /* Dark mode variants */
+  .dark .bg-darkfantasy-primary {
+    background-color: var(--background);
+  }
+  .dark .text-darkfantasy-neutral {
+    color: var(--foreground);
+  }
+}
