@@ -9,6 +9,7 @@ import api from '../api';
 const CELL_SIZE = 100; // Pixels
 const GAP = 5; // Pixels
 const ItemTypes = { ITEM: 'item' };
+const FIXED_COLS = 5; // Fixed number of columns
 
 function InventoryGrid() {
   const { user } = useAuth();
@@ -29,14 +30,11 @@ function InventoryGrid() {
     silver: character?.data?.currency?.silver || 0,
     copper: character?.data?.currency?.copper || 0,
   });
-  const [gridSize, setGridSize] = useState({
-    rows: character?.data?.gridSize?.rows || 5,
-    cols: character?.data?.gridSize?.cols || 5,
-  });
+  const [gridRows, setGridRows] = useState(character?.data?.gridSize?.rows || 5);
 
   // Compute total size dynamically
-  const TOTAL_WIDTH = gridSize.cols * CELL_SIZE + (gridSize.cols - 1) * GAP;
-  const TOTAL_HEIGHT = gridSize.rows * CELL_SIZE + (gridSize.rows - 1) * GAP;
+  const TOTAL_WIDTH = FIXED_COLS * CELL_SIZE + (FIXED_COLS - 1) * GAP;
+  const TOTAL_HEIGHT = gridRows * CELL_SIZE + (gridRows - 1) * GAP;
 
   // Redirect if no character or user
   useEffect(() => {
@@ -59,7 +57,6 @@ function InventoryGrid() {
         try {
           let initialItems = [];
           if (character.id) {
-            // Fetch from inventory_items for existing characters
             const fetchedItems = await api.getInventoryItems(character.id);
             initialItems = fetchedItems.map((item) => ({
               id: item.id,
@@ -71,7 +68,6 @@ function InventoryGrid() {
               character_id: item.character_id,
             }));
           } else {
-            // Use character.data.equipment for new characters
             initialItems = (character.data?.equipment || []).map((item) => ({
               id: item.id,
               name: item.name,
@@ -104,14 +100,10 @@ function InventoryGrid() {
     }));
   };
 
-  // Handle grid size changes
-  const handleGridSizeChange = (e) => {
-    const { name, value } = e.target;
-    const newValue = Math.min(15, Math.max(1, Number(value) || 1));
-    setGridSize((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
+  // Handle grid rows change
+  const handleGridRowsChange = (e) => {
+    const newValue = Math.min(15, Math.max(1, Number(e.target.value) || 1));
+    setGridRows(newValue);
   };
 
   // Add a new item
@@ -123,7 +115,7 @@ function InventoryGrid() {
 
     const position = findFreeCell();
     if (!position) {
-      setError(`No space left in the ${gridSize.cols}x${gridSize.rows} grid`);
+      setError(`No space left in the ${FIXED_COLS}x${gridRows} grid`);
       return;
     }
 
@@ -193,8 +185,8 @@ function InventoryGrid() {
 
   // Find first free 1x1 cell
   const findFreeCell = () => {
-    for (let y = 1; y <= gridSize.rows; y++) {
-      for (let x = 1; x <= gridSize.cols; x++) {
+    for (let y = 1; y <= gridRows; y++) {
+      for (let x = 1; x <= FIXED_COLS; x++) {
         const taken = items.some(
           (item) =>
             item.gridX <= x &&
@@ -218,9 +210,9 @@ function InventoryGrid() {
     // Validate position
     if (
       x < 1 ||
-      x + item.w - 1 > gridSize.cols ||
+      x + item.w - 1 > FIXED_COLS ||
       y < 1 ||
-      y + item.h - 1 > gridSize.rows
+      y + item.h - 1 > gridRows
     ) {
       return;
     }
@@ -275,8 +267,8 @@ function InventoryGrid() {
         const item = prev.find((i) => i.id === id);
         if (!item) return prev;
 
-        const newW = Math.max(1, Math.min(item.w + dw, gridSize.cols - item.gridX + 1));
-        const newH = Math.max(1, Math.min(item.h + dh, gridSize.rows - item.gridY + 1));
+        const newW = Math.max(1, Math.min(item.w + dw, FIXED_COLS - item.gridX + 1));
+        const newH = Math.max(1, Math.min(item.h + dh, gridRows - item.gridY + 1));
 
         // Check for overlaps
         for (let y = item.gridY; y < item.gridY + newH; y++) {
@@ -385,7 +377,7 @@ function InventoryGrid() {
           },
         })),
         currency,
-        gridSize,
+        gridSize: { rows: gridRows, cols: FIXED_COLS },
       },
     };
     console.log('Navigating back with character:', updatedCharacter);
@@ -396,7 +388,7 @@ function InventoryGrid() {
         imagePreview,
         updatedEquipment: updatedCharacter.data.equipment,
         updatedCurrency: currency,
-        updatedGridSize: gridSize,
+        updatedGridSize: { rows: gridRows, cols: FIXED_COLS },
       },
     });
   };
@@ -423,9 +415,102 @@ function InventoryGrid() {
           <div className="mb-6 space-y-4">
             <h2 className="text-xl font-bold text-darkfantasy-highlight">Manage Items</h2>
             <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
+                  Item Name
+                </label>
+                <input
+                  type="text"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)}
+                  onKeyPress={handleAddKeyPress}
+                  placeholder="Enter item name"
+                  className="w-72 px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
+                  disabled={loading}
+                />
+              </div>
             </div>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
+                  Grid Rows (1-15)
+                </label>
+                <input
+                  type="number"
+                  value={gridRows}
+                  onChange={handleGridRowsChange}
+                  min="1"
+                  max="15"
+                  className="w-24 px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <div className="flex justify-start space-x-4">
+              <button
+                onClick={addItem}
+                disabled={loading || !itemName.trim()}
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
+              >
+                Add Item
+              </button>
+              <button
+                onClick={removeItem}
+                disabled={loading || !selectedId}
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
+              >
+                Remove Selected Item
+              </button>
+            </div>
+          </div>
 
-            {/* Currency Inputs */}
+          {/* Grid */}
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-darkfantasy-highlight mb-4">
+              Inventory Grid ({FIXED_COLS}x{gridRows})
+            </h2>
+            <div
+              className={`grid grid-cols-${FIXED_COLS} grid-rows-${gridRows} gap-[5px] bg-darkfantasy-secondary relative`}
+              style={{
+                width: `${TOTAL_WIDTH}px`,
+                height: `${TOTAL_HEIGHT}px`,
+                minWidth: `${TOTAL_WIDTH}px`,
+                minHeight: `${TOTAL_HEIGHT}px`,
+                boxSizing: 'border-box',
+              }}
+            >
+              {[...Array(gridRows)].map((_, y) =>
+                [...Array(FIXED_COLS)].map((_, x) => (
+                  <InventoryCell
+                    key={`cell-${x}-${y}`}
+                    x={x + 1}
+                    y={y + 1}
+                    items={items}
+                    onDrop={handleDrop}
+                  />
+                ))
+              )}
+              {items.map((item) => (
+                <InventoryItem
+                  key={item.id}
+                  item={item}
+                  isSelected={selectedId === item.id}
+                  onSelect={() => setSelectedId(item.id)}
+                  onResize={resizeItem}
+                  onDoubleClick={() => startEditing(item.id, item.name)}
+                  isEditing={editingId === item.id}
+                  editName={editName}
+                  setEditName={setEditName}
+                  saveName={() => saveName(item.id)}
+                  disabled={loading}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Currency Inputs */}
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-darkfantasy-highlight mb-4">Currency</h2>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
@@ -470,102 +555,10 @@ function InventoryGrid() {
                 />
               </div>
             </div>
-
-            {/* Grid Size Inputs */}
-            <div className="flex flex-col justify-center items-center">
-              <div>
-                <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
-                  Item Name
-                </label>
-                <input
-                  type="text"
-                  value={itemName}
-                  onChange={(e) => setItemName(e.target.value)}
-                  onKeyPress={handleAddKeyPress}
-                  placeholder="Enter item name"
-                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-center gap-5">
-              <button
-                onClick={addItem}
-                disabled={loading || !itemName.trim()}
-                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
-              >
-                Add Item
-              </button>
-              <button
-                onClick={removeItem}
-                disabled={loading || !selectedId}
-                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
-              >
-                Remove Selected Item
-              </button>
-            </div>
           </div>
 
-          {/* Grid */}
-          <div className="mb-6 flex flex-col justify-center items-center">
-            <h2 className="text-xl font-bold text-darkfantasy-highlight mb-4">
-              Inventory Grid ({gridSize.cols}x{gridSize.rows})
-            </h2>
-            <div
-              className={`grid grid-cols-${gridSize.cols} grid-rows-${gridSize.rows} gap-[5px] bg-darkfantasy-secondary relative`}
-              style={{
-                width: `${TOTAL_WIDTH}px`,
-                height: `${TOTAL_HEIGHT}px`,
-                minWidth: `${TOTAL_WIDTH}px`,
-                minHeight: `${TOTAL_HEIGHT}px`,
-                boxSizing: 'border-box',
-              }}
-            >
-              {[...Array(gridSize.rows)].map((_, y) =>
-                [...Array(gridSize.cols)].map((_, x) => (
-                  <InventoryCell
-                    key={`cell-${x}-${y}`}
-                    x={x + 1}
-                    y={y + 1}
-                    items={items}
-                    onDrop={handleDrop}
-                  />
-                ))
-              )}
-              {items.map((item) => (
-                <InventoryItem
-                  key={item.id}
-                  item={item}
-                  isSelected={selectedId === item.id}
-                  onSelect={() => setSelectedId(item.id)}
-                  onResize={resizeItem}
-                  onDoubleClick={() => startEditing(item.id, item.name)}
-                  isEditing={editingId === item.id}
-                  editName={editName}
-                  setEditName={setEditName}
-                  saveName={() => saveName(item.id)}
-                  disabled={loading}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col justify-center items-center">
-            <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
-              Grid Rows (1-15)
-            </label>
-            <input
-              type="number"
-              name="rows"
-              value={gridSize.rows}
-              onChange={handleGridSizeChange}
-              min="1"
-              max="15"
-              className="w-24 px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
-              disabled={loading}
-            />
-          </div>
-          <div className="text-center mt-6">
+          {/* Back Button */}
+          <div className="text-center">
             <button
               onClick={handleBack}
               disabled={loading}
