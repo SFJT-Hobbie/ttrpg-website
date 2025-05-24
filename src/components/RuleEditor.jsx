@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
-function RuleForm() {
+function RuleEditor() {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -280,4 +280,4 @@ function RuleForm() {
   );
 }
 
-export default RuleForm;
+export default RuleEditor;

@@ -5,7 +5,7 @@ import DiceTray from './components/Dicetray';
 import Home from './components/Home';
 import Chapters from './components/Chapters.jsx';
 import Subchapters from './components/Subchapters';
-import RuleForm from './components/RuleForm.jsx';
+import RuleEditor from './components/RuleEditor';
 import Characters from './components/Characters';
 import CharacterSheet from './components/CharacterSheet.jsx';
 import NPCSheet from './components/NPCSheet.jsx'; // Import the new NPCSheet
@@ -30,7 +30,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/rules" element={<Chapters />} />
               <Route path="/rules/:chapterId" element={<Subchapters />} />
-              <Route path="/rules/new" element={<RuleForm />} />
+              <Route path="/rules/new" element={<RuleEditor />} />
               <Route
                 path="/characters"
                 element={<ProtectedRoute><Characters /></ProtectedRoute>}
