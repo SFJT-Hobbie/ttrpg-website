@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../supabaseClient.js';
 import { useAuth } from '../AuthContext.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Quill from 'quill';

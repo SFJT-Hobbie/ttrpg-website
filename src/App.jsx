@@ -5,7 +5,7 @@ import DiceTray from './components/Dicetray';
 import Home from './components/Home';
 import Chapters from './components/Chapters.jsx';
 import Subchapters from './components/Subchapters';
-import RuleForm from './components/Ruleform.jsx';
+import RuleForm from './components/RuleForm.jsx';
 import Characters from './components/Characters';
 import CharacterSheet from './components/CharacterSheet.jsx';
 import NPCSheet from './components/NPCSheet.jsx'; // Import the new NPCSheet
