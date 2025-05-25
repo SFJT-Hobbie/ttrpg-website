@@ -3,11 +3,27 @@
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  background-image: url(/public/assets/dark-wood.jpg);
+  background-image: url('/assets/dark-wood.jpg');
   background-size: cover;
+  overflow: hidden;
 }
 
 #dice-box canvas {
   width: 100%;
   height: 100%;
+  display: block; /* Ensure canvas is a block element to avoid layout issues */
+}
+
+/* Specific styles for Home screen's dice-box */
+.home #dice-box {
+  min-height: 16rem; /* Match Home's h-64 (256px) */
+  max-height: 16rem;
+  border: 2px solid #8a7b5e; /* Match dark fantasy border */
+  border-radius: 0.5rem; /* Match rounded-lg */
+}
+
+/* Specific styles for DiceTray's dice-box */
+.dicetray #dice-box {
+  min-height: 22.5rem; /* Match DiceTray's h-90 (360px) */
+  max-height: 22.5rem;
 }
