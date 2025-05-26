@@ -42,5 +42,45 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
     "vite": "^6.3.5"
-  }
+  },
+    "tailwindcss": {
+    "content": ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+    "safelist": [
+      "grid-cols-5",
+      "grid-rows-1",
+      "grid-rows-2",
+      "grid-rows-3",
+      "grid-rows-4",
+      "grid-rows-5",
+      "grid-rows-6",
+      "grid-rows-7",
+      "grid-rows-8",
+      "grid-rows-9",
+      "grid-rows-10",
+      "grid-rows-11",
+      "grid-rows-12",
+      "grid-rows-13",
+      "grid-rows-14",
+      "grid-rows-15",
+      "gap-[5px]"
+    ],
+    "theme": {
+      "extend": {
+        "colors": {
+          "darkfantasy-primary": "#3c2f2f",
+          "darkfantasy-secondary": "#661318",
+          "darkfantasy-tertiary": "#2f1e1e",
+          "darkfantasy-highlight": "#fb2c36",
+          "darkfantasy-neutral": "#d4c5a5",
+          "darkfantasy": "#8a7b5e"
+        },
+        "fontFamily": {
+          "darkfantasy": ["'Custom Fantasy Font'", "sans-serif"]
+        },
+        "boxShadow": {
+          "darkfantasy": "0 4px 8px rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+    }
 }

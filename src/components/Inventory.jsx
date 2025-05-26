@@ -423,7 +423,7 @@ function InventoryGrid() {
                   type="text"
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
-                  onKeyPress={handleAddKeyPress}
+                  onKeyDown={handleAddKeyPress}
                   placeholder="Enter item name"
                   className="w-72 px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
                   disabled={loading}
@@ -470,13 +470,18 @@ function InventoryGrid() {
               Inventory Grid ({FIXED_COLS}x{gridRows})
             </h2>
             <div
-              className={`grid grid-cols-${FIXED_COLS} grid-rows-${gridRows} gap-[5px] bg-darkfantasy-secondary relative`}
+              className={`grid grid-cols-5 grid-rows-${gridRows} gap-[5px] bg-darkfantasy-secondary relative overflow-hidden`} // Static grid-cols-5
               style={{
                 width: `${TOTAL_WIDTH}px`,
                 height: `${TOTAL_HEIGHT}px`,
                 minWidth: `${TOTAL_WIDTH}px`,
                 minHeight: `${TOTAL_HEIGHT}px`,
                 boxSizing: 'border-box',
+                // Temporary inline style for debugging
+                display: 'grid',
+                gridTemplateColumns: `repeat(${FIXED_COLS}, ${CELL_SIZE}px)`,
+                gridTemplateRows: `repeat(${gridRows}, ${CELL_SIZE}px)`,
+                gap: `${GAP}px`,
               }}
             >
               {[...Array(gridRows)].map((_, y) =>
