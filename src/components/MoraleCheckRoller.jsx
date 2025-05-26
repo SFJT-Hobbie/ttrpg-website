@@ -33,7 +33,7 @@ function MoraleCheckRoller({ diceBox }) {
 
   return (
     <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
-      <h3 className="text-xl font-bold text-darkfantasy-highlight">Morale Check Roller</h3>
+      <h3 className="text-xl font-bold text-darkfantasy-highlight">Morale Roller</h3>
       <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex items-center justify-center">
         {getMoraleMessage()}
       </div>

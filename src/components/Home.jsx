@@ -5,15 +5,22 @@ import ReactionRollGenerator from './ReactionRollGenerator';
 import MoraleCheckRoller from './MoraleCheckRoller';
 import CombatPhaseTracker from './CombatPhaseTracker';
 import DungeonExplorationTurnTracker from './DungeonExplorationTurnTracker';
+import ExperienceCalculator from './ExperienceCalculator';
+import DiceRollerPanel from './DiceRollerPanel';
+import MarchingOrder from './MarchingOrder';
+import SurpriseCheck from './SurpriseCheck';
+import MonsterGenerator from './MonsterGenerator';
 
 function Home() {
   const [diceBox, setDiceBox] = useState(null);
+  const [diceColor, setDiceColor] = useState('#fb2c36'); // Default color
+  const [generatedMonsterXP, setGeneratedMonsterXP] = useState(0);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
     const initializeDiceBox = async () => {
       const db = new DiceBox('body', {
-        themeColor: '#fb2c36',
+        themeColor: diceColor,
         assetPath: '/assets/',
         theme: 'rock',
         scale: 10,
@@ -37,18 +44,30 @@ function Home() {
             clearTimeout(timeoutRef.current);
           }
           timeoutRef.current = setTimeout(() => {
-            try {
-              db.clear();
-              console.log('Dice cleared after 10 seconds');
-            } catch (err) {
-              console.warn('DiceBox clear failed:', err);
-              const canvases = document.body.getElementsByTagName('canvas');
-              Array.from(canvases).forEach((canvas) => {
-                if (canvas.parentNode === document.body) {
-                  canvas.style.display = 'none';
-                }
-              });
-            }
+            const canvases = document.body.getElementsByTagName('canvas');
+            Array.from(canvases).forEach((canvas) => {
+              if (canvas.parentNode === document.body) {
+                canvas.style.opacity = '0';
+              }
+            });
+            setTimeout(() => {
+              try {
+                db.clear();
+                Array.from(canvases).forEach((canvas) => {
+                  if (canvas.parentNode === document.body) {
+                    canvas.style.opacity = '1';
+                  }
+                });
+                console.log('Dice faded out and cleared after 10 seconds');
+              } catch (err) {
+                console.warn('DiceBox clear failed:', err);
+                Array.from(canvases).forEach((canvas) => {
+                  if (canvas.parentNode === document.body) {
+                    canvas.style.opacity = '1';
+                  }
+                });
+              }
+            }, 1000);
           }, 10000);
         };
         setDiceBox(db);
@@ -77,7 +96,14 @@ function Home() {
         });
       }
     };
-  }, []);
+  }, []); // Run once on mount
+
+  // Update diceBox themeColor when diceColor changes
+  useEffect(() => {
+    if (diceBox) {
+      diceBox.updateConfig({ themeColor: diceColor });
+    }
+  }, [diceColor, diceBox]);
 
   return (
     <div className="min-h-screen bg-darkfantasy-primary p-6 font-darkfantasy home">
@@ -86,23 +112,41 @@ function Home() {
           Welcome to the TTRPG Website
         </h1>
         <p className="text-darkfantasy-neutral text-center mb-8">
-          Explore rules, manage characters, and write journals for your game.
+          Explore rules, manage characters, and more for your game.
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="col-span-1">
-            <CombatPhaseTracker diceBox={diceBox} /> {/* Pass diceBox prop */}
+            <CombatPhaseTracker diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
           </div>
           <div className="col-span-1">
             <DungeonExplorationTurnTracker />
           </div>
           <div className="col-span-1">
-            <RandomEncounterRoller diceBox={diceBox} />
+            <MarchingOrder />
           </div>
           <div className="col-span-1">
-            <ReactionRollGenerator diceBox={diceBox} />
+            <RandomEncounterRoller diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
           </div>
           <div className="col-span-1">
-            <MoraleCheckRoller diceBox={diceBox} />
+            <SurpriseCheck diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
+          </div>
+          <div className="col-span-1">
+            <ReactionRollGenerator diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
+          </div>
+          <div className="col-span-1">
+            <MoraleCheckRoller diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
+          </div>
+          <div className="col-span-1">
+            <ExperienceCalculator summonedXP={generatedMonsterXP} />
+          </div>
+          <div className="col-span-1">
+            <DiceRollerPanel diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
+          </div>
+          <div className="col-span-1">
+            <MonsterGenerator
+              diceBox={diceBox} 
+              onMonsterGenerated={setGeneratedMonsterXP}
+            />
           </div>
         </div>
       </div>

@@ -40,5 +40,124 @@ body > canvas {
   width: 100vw !important;
   height: 100vh !important;
   z-index: 9999 !important;
-  pointer-events: none !important; /* Allows clicks to pass through */
+  pointer-events: none !important;
+  transition: opacity 1s ease-in-out !important; /* 1-second fade-out */
+  opacity: 1 !important; /* Ensure visible by default */
+}
+
+/* Style for color picker */
+.color-picker {
+  appearance: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border-radius: 4px;
+  border: 1px solid #4a3728;
+}
+
+.color-picker::-moz-color-swatch {
+  border-radius: 4px;
+  border: 1px solid #4a3728;
+}
+
+/* Shared Monster Card Styles */
+.monster-card-aberracion,
+.monster-card-otros,
+.monster-card-bondades {
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.monster-card-aberracion h4,
+.monster-card-otros h4,
+.monster-card-bondades h4 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.monster-card-aberracion p,
+.monster-card-otros p,
+.monster-card-bondades p {
+  font-size: 0.875rem;
+  margin: 4px 0;
+}
+
+.monster-card-aberracion .section,
+.monster-card-otros .section,
+.monster-card-bondades .section {
+  border-top: 1px solid;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.monster-card-aberracion .section:first-child,
+.monster-card-otros .section:first-child,
+.monster-card-bondades .section:first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Aberraciones Mágicas Card */
+.monster-card-aberracion {
+  background: linear-gradient(to bottom, #1f2a14, #2f3a24); /* Green-tinted gradient */
+  border: 2px solid #6B8E23; /* Sickly green */
+}
+
+.monster-card-aberracion h4 {
+  color: #6B8E23; /* Sickly green */
+}
+
+.monster-card-aberracion p {
+  color: #a8b88a;
+}
+
+.monster-card-aberracion .section {
+  border-top-color: #6B8E23; /* Sickly green */
+}
+
+/* Los Otros Card */
+.monster-card-otros {
+  background: linear-gradient(to bottom, #1f142a, #2f243a); /* Purple-tinted gradient */
+  border: 2px solid #4B0082; /* Dark purple */
+}
+
+.monster-card-otros h4 {
+  color: #4B0082; /* Dark purple */
+}
+
+.monster-card-otros p {
+  color: #a8a8b8;
+}
+
+.monster-card-otros .section {
+  border-top-color: #4B0082; /* Dark purple */
+}
+
+/* Las Bondades Card */
+.monster-card-bondades {
+  background: linear-gradient(to bottom, #2a1f14, #3a2f24); /* Original gradient */
+  border: 2px solid #4a3728;
+}
+
+.monster-card-bondades h4 {
+  color: #e8c39e;
+}
+
+.monster-card-bondades p {
+  color: #b8a78a;
+}
+
+.monster-card-bondades .section {
+  border-top-color: #4a3728;
 }

@@ -27,3 +27,36 @@
   min-height: 22.5rem; /* Match DiceTray's h-90 (360px) */
   max-height: 22.5rem;
 }
+
+body > canvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  pointer-events: none !important;
+  transition: opacity 1s ease-in-out !important; /* 1-second fade-out */
+  opacity: 1 !important; /* Ensure visible by default */
+}
+
+/* Style for color picker */
+.color-picker {
+  appearance: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border-radius: 4px;
+  border: 1px solid #4a3728;
+}
+
+.color-picker::-moz-color-swatch {
+  border-radius: 4px;
+  border: 1px solid #4a3728;
+}
