@@ -21,6 +21,10 @@ function DiceTrayErrorBoundary({ error, resetErrorBoundary }) {
 
 function DiceTray() {
   const [isOpen, setIsOpen] = useState(false);
+  const [diceColor, setDiceColor] = useState(localStorage.getItem('diceTrayColor') || '#fb2c36');
+  useEffect(() => {
+    localStorage.setItem('diceTrayColor', diceColor);
+  }, [diceColor]);
   const mountRef = useRef(null);
   const diceBoxRef = useRef(null);
 
@@ -39,7 +43,7 @@ function DiceTray() {
 
     const selector = '#dice-box';
     const diceBox = new DiceBox(selector, {
-      themeColor: '#fb2c36',
+      themeColor: diceColor, // Dynamic color
       assetPath: '/assets/',
       theme: 'rock',
       scale: 10,
@@ -80,9 +84,16 @@ function DiceTray() {
     };
   }, [isOpen]);
 
+  // Update themeColor when diceColor changes
+  useEffect(() => {
+    if (diceBoxRef.current && isOpen) {
+      diceBoxRef.current.updateConfig({ themeColor: diceColor });
+    }
+  }, [diceColor, isOpen]);
+
   const rollDie = (notation) => {
     if (diceBoxRef.current) {
-      diceBoxRef.current.roll(notation, { clear: false }); // No more clear here!
+      diceBoxRef.current.roll(notation, { clear: false });
     }
   };
 
@@ -107,7 +118,7 @@ function DiceTray() {
             <div
               id="dice-box"
               ref={mountRef}
-              className="dice-box mb-4 border border-darkfantasy rounded-lg shadow-md overflow-hidden h-90"
+              className="dicetray mb-4 border border-darkfantasy rounded-lg shadow-md overflow-hidden"
             ></div>
 
             <div className="grid grid-cols-4 gap-2 w-full sm:grid-cols-3">
@@ -120,6 +131,16 @@ function DiceTray() {
                   {die.name}
                 </button>
               ))}
+            </div>
+
+            <div className="mt-4 flex flex-col items-center">
+              <label className="text-darkfantasy-neutral text-xs font-sans mb-1">Dice Color</label>
+              <input
+                type="color"
+                value={diceColor}
+                onChange={(e) => setDiceColor(e.target.value)}
+                className="color-picker"
+              />
             </div>
 
             <button
