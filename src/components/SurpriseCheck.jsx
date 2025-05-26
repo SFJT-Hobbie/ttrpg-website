@@ -28,6 +28,10 @@ function SurpriseCheck({ diceBox }) {
   return (
     <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
       <h3 className="text-xl font-bold text-darkfantasy-highlight">Surprise Check</h3>
+      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex flex-col items-center justify-center">
+        <div>{partyResult || 'No party result'}</div>
+        <div>{monsterResult || 'No monster result'}</div>
+      </div>
       <div className="flex space-x-4">
         <button
           onClick={() => rollSurprise('Party')}
@@ -43,10 +47,6 @@ function SurpriseCheck({ diceBox }) {
           <ShieldAlertIcon className="w-5 h-5 mr-2" />
           Monster
         </button>
-      </div>
-      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex flex-col items-center justify-center">
-        <div>{partyResult || 'No party result'}</div>
-        <div>{monsterResult || 'No monster result'}</div>
       </div>
     </div>
   );

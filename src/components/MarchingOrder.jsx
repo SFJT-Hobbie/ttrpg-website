@@ -34,6 +34,9 @@ function MarchingOrder() {
           </option>
         ))}
       </select>
+      <div className="text-darkfantasy-neutral text-lg font-bold font-darkfantasy flex-grow flex items-center justify-center">
+        {savedLine ? `${savedLine}${savedLine === '1' ? 'st' : savedLine === '2' ? 'nd' : savedLine === '3' ? 'rd' : 'th'} Line` : 'No line position set'}
+      </div>
       <div className="flex space-x-4">
         <button
           onClick={saveLine}
@@ -52,9 +55,6 @@ function MarchingOrder() {
           <TrashIcon className="w-5 h-5 mr-2" />
           Clear
         </button>
-      </div>
-      <div className="text-darkfantasy-neutral text-lg font-bold font-darkfantasy flex-grow flex items-center justify-center">
-        {savedLine ? `${savedLine}${savedLine === '1' ? 'st' : savedLine === '2' ? 'nd' : savedLine === '3' ? 'rd' : 'th'} Line` : 'No line position set'}
       </div>
     </div>
   );

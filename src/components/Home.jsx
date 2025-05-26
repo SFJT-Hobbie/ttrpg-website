@@ -114,6 +114,9 @@ function Home() {
         <p className="text-darkfantasy-neutral text-center mb-8">
           Explore rules, manage characters, and more for your game.
         </p>
+        <p className="text-darkfantasy-neutral text-center mb-8 font-sans">
+          In this page you will find various tools to enhance your tabletop RPG experience.
+        </p>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="col-span-1">
             <CombatPhaseTracker diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
