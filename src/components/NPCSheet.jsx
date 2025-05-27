@@ -13,8 +13,8 @@ function NPCSheet() {
   // Initialize character state, merging updates from subpages
   const [character, setCharacter] = useState(() => {
     const stateCharacter = location.state?.character || {};
-    const updatedEquipment = location.state?.updatedEquipment; // From Inventory
-    const updatedProficiencies = location.state?.updatedProficiencies; // From NonWeaponProficiencies
+    const updatedEquipment = location.state?.updatedEquipment;
+    const updatedProficiencies = location.state?.updatedProficiencies;
     const updatedCurrency = location.state?.updatedCurrency;
     const updatedGridSize = location.state?.updatedGridSize;
 
@@ -29,13 +29,15 @@ function NPCSheet() {
         save: 0,
         bonusToHit: 0,
         ac: 0,
-        equipment: [], // Renamed from inventory to match Inventory component
-        proficiencies: [], // Weapon Proficiencies
-        nonWeaponProficiencies: [], // Non-Weapon Proficiencies
+        closeQuarterMovement: 0, // New field
+        openFieldMovement: 0,    // New field
+        equipment: [],
+        proficiencies: [],
+        nonWeaponProficiencies: [],
         description: '',
         picture: '',
-        class: '', // For Humanoid
-        xp: 0,    // For Humanoid
+        class: '',
+        xp: 0,
       },
     };
 
@@ -49,6 +51,8 @@ function NPCSheet() {
         nonWeaponProficiencies: updatedProficiencies || stateCharacter.data?.nonWeaponProficiencies || [],
         currency: updatedCurrency || stateCharacter.data?.currency || defaultCharacter.data.currency,
         gridSize: updatedGridSize || stateCharacter.data?.gridSize || defaultCharacter.data.gridSize,
+        closeQuarterMovement: stateCharacter.data?.closeQuarterMovement || 0, // Initialize if not present
+        openFieldMovement: stateCharacter.data?.openFieldMovement || 0,       // Initialize if not present
       },
     };
   });
@@ -58,7 +62,6 @@ function NPCSheet() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(character.data.picture || '');
 
-  // Proficiency options for Weapon Proficiencies (same as CharacterSheet.jsx)
   const proficiencyOptions = [
     'Sword', 'Axe', 'Mace', 'Staff', 'Spear', 'Dagger', 'Flail', 'Warhammer',
     'Two-Handed Sword', 'Morning Star', 'Glaive', 'Halberd', 'Quarterstaff',
@@ -69,19 +72,19 @@ function NPCSheet() {
     if (character.data.picture) setImagePreview(character.data.picture);
   }, [character.data.picture]);
 
-  // Handle standard field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCharacter((prev) => ({
       ...prev,
       data: {
         ...prev.data,
-        [name]: ['hd', 'hp', 'save', 'bonusToHit', 'ac', 'xp'].includes(name) ? Number(value) || 0 : value,
+        [name]: ['hd', 'hp', 'save', 'bonusToHit', 'ac', 'xp', 'closeQuarterMovement', 'openFieldMovement'].includes(name)
+          ? Number(value) || 0
+          : value,
       },
     }));
   };
 
-  // Handle adding weapon proficiencies
   const handleProficiencyChange = (e) => {
     const selectedProf = e.target.value;
     if (selectedProf && !character.data.proficiencies.includes(selectedProf)) {
@@ -95,7 +98,6 @@ function NPCSheet() {
     }
   };
 
-  // Handle removing weapon proficiencies
   const removeProficiency = (prof) => {
     setCharacter((prev) => ({
       ...prev,
@@ -106,7 +108,6 @@ function NPCSheet() {
     }));
   };
 
-  // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -126,7 +127,6 @@ function NPCSheet() {
     return data.publicUrl;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -140,11 +140,12 @@ function NPCSheet() {
         user_id: user.id,
         type: 'NPC',
         name: character.data.name,
-        data: { 
+        data: {
           ...character.data,
           currency: character.data.currency,
           gridSize: character.data.gridSize,
-          picture: pictureUrl },
+          picture: pictureUrl,
+        },
       };
 
       if (character.id) {
@@ -317,6 +318,37 @@ function NPCSheet() {
                   disabled={loading}
                 />
               </div>
+              <div>
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                  Close Quarter Movement
+                </label>
+                <input
+                  type="number"
+                  name="closeQuarterMovement"
+                  value={character.data.closeQuarterMovement}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                  Open Field Movement
+                </label>
+                <input
+                  type="number"
+                  name="openFieldMovement"
+                  value={character.data.openFieldMovement}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  disabled={loading}
+                />
+                <p className="text-darkfantasy-neutral text-xs mt-1">
+                  Open Field Movement is Close Quarter Movement × 4
+                </p>
+              </div>
             </div>
           </div>
 
@@ -324,7 +356,6 @@ function NPCSheet() {
           <div>
             <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">Proficiencies</h2>
             <div className="space-y-4 mt-4">
-              {/* Weapon Proficiencies */}
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Weapon Proficiencies
@@ -356,8 +387,6 @@ function NPCSheet() {
                     ))}
                 </select>
               </div>
-
-              {/* Non-Weapon Proficiencies */}
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Non-Weapon Proficiencies
