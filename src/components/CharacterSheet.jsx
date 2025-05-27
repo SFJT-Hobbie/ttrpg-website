@@ -62,6 +62,8 @@ function CharacterSheet() {
         journals: [],
         bonusToHit: 0,
         bonusToSave: 0,
+        closeQuarterMovement: 0, // New field
+        openFieldMovement: 0,   // New field
       },
     };
 
@@ -76,6 +78,8 @@ function CharacterSheet() {
           restingSite: stateCharacter.data.restingSite || '',
           currency: updatedCurrency || stateCharacter.data?.currency || defaultCharacter.data.currency,
           gridSize: updatedGridSize || stateCharacter.data?.gridSize || defaultCharacter.data.gridSize,
+          closeQuarterMovement: stateCharacter.data.closeQuarterMovement || 0, // Initialize if not present
+          openFieldMovement: stateCharacter.data.openFieldMovement || 0,       // Initialize if not present
         },
       };
     }
@@ -720,6 +724,37 @@ function CharacterSheet() {
                   className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
                   disabled={loading}
                 />
+              </div>
+              <div>
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                  Close Quarter Movement
+                </label>
+                <input
+                  type="number"
+                  name="closeQuarterMovement"
+                  value={character.data.closeQuarterMovement}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                  Open Field Movement
+                </label>
+                <input
+                  type="number"
+                  name="openFieldMovement"
+                  value={character.data.openFieldMovement}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  disabled={loading}
+                />
+                <p className="text-darkfantasy-neutral text-xs mt-1">
+                  Open Field Movement is Close Quarter Movement × 4
+                </p>
               </div>
               <div className="col-span-2">
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
