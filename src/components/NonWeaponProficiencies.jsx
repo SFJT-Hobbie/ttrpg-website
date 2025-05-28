@@ -943,7 +943,7 @@ function NonWeaponProficiencies() {
         <div className="text-center mt-6">
           <div>
             <p>Base skill % = Attribute Value</p>
-            <p>Proficient skill % = Attribute Value × 3</p>
+            <p>Proficient skill % = Attribute Value × 2</p>
           </div>
           <button
             onClick={handleBack}
