@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { X } from 'lucide-react';
+import { DiceBoxContext } from '../DiceBoxContext';
 import RandomEncounterRoller from './RandomEncounterRoller';
 import ReactionRollGenerator from './ReactionRollGenerator';
 import MoraleCheckRoller from './MoraleCheckRoller';
@@ -11,7 +12,8 @@ import MarchingOrder from './MarchingOrder';
 import SurpriseCheck from './SurpriseCheck';
 import MonsterGenerator from './MonsterGenerator';
 
-function Home({ diceBox }) {
+function Home() {
+  const { diceBox } = useContext(DiceBoxContext);
   const [generatedMonsterXP, setGeneratedMonsterXP] = useState(0);
 
   // Define the list of tools with their components and props
@@ -65,6 +67,7 @@ function Home({ diceBox }) {
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="mb-4 p-2 bg-darkfantasy-secondary text-darkfantasy-neutral rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy text-sm"
+            aria-label={showSettings ? 'Hide settings' : 'Show settings'}
           >
             {showSettings ? 'Hide Settings' : 'Show Settings'}
           </button>
@@ -76,6 +79,7 @@ function Home({ diceBox }) {
             <button
               onClick={() => setShowSettings(false)}
               className="absolute top-2 right-2 text-darkfantasy-neutral hover:text-darkfantasy-highlight"
+              aria-label="Close settings"
             >
               <X className="w-5 h-5" />
             </button>
@@ -95,6 +99,7 @@ function Home({ diceBox }) {
                     }))
                   }
                   className="mr-2 accent-darkfantasy-accent"
+                  aria-label={`Toggle ${tool.name}`}
                 />
                 <label htmlFor={tool.name} className="text-darkfantasy-neutral font-darkfantasy text-sm">
                   {tool.name}
