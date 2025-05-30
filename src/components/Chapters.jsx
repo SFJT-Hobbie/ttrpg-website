@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import { useAuth } from '../AuthContext.jsx';
 import { Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 import debounce from 'lodash/debounce';
@@ -9,6 +10,7 @@ function Chapters() {
   const [search, setSearch] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { isAdmin } = useAuth();
 
   // Fetch chapters
   useEffect(() => {
@@ -63,13 +65,16 @@ function Chapters() {
           <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent tracking-tight">
             Chronicles of the Realm
           </h1>
-          <Link
-            to="/rules/new"
-            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
-            aria-label="Add new chapter"
-          >
-            Inscribe New Chapter
-          </Link>
+          {isAdmin && (
+            <Link
+              to="/rules/new"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label="Add new chapter"
+            >
+              Inscribe New Chapter
+            </Link>
+            )
+          }
         </div>
 
         {/* Error Message */}

@@ -18,8 +18,8 @@ function Logout() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-darkfantasy-background p-8 font-darkfantasy relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/assets/runes-bg.png')] bg-cover bg-center opacity-10 pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center p-8 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
       <div className="bg-darkfantasy-tertiary p-8 rounded-lg shadow-darkfantasy w-full max-w-md text-center border-darkfantasy-dark">
         <h1 className="text-3xl font-darkfantasy-heading text-darkfantasy-accent mb-6 tracking-tight">
           Sever the Bond
