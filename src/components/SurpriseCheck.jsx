@@ -39,54 +39,64 @@ function SurpriseCheck({ diceBox }) {
   };
 
   return (
-    <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
-      <h3 className="text-xl font-bold text-darkfantasy-highlight">Surprise Check</h3>
-      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex flex-col items-center justify-center">
-        <div>{partyResult || 'No party result'}</div>
-        <div>{monsterResult || 'No monster result'}</div>
+    <div className="bg-darkfantasy-tertiary shadow-darkfantasy border-darkfantasy rounded-lg p-6 flex flex-col items-center space-y-4 min-h-[200px] texture-darkfantasy">
+      <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight">Surprise Check</h3>
+      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex flex-col items-center justify-center space-y-2">
+        <div className={partyResult && partyResult.includes('Surprised') ? 'text-darkfantasy-accent animate-pulse-darkfantasy' : ''}>
+          {partyResult || 'No party result'}
+        </div>
+        <div className={monsterResult && monsterResult.includes('Surprised') ? 'text-darkfantasy-accent animate-pulse-darkfantasy' : ''}>
+          {monsterResult || 'No monster result'}
+        </div>
       </div>
       <div className="flex flex-col items-center space-y-4">
-        <div className="flex space-y-4 flex-col">
-          <div className="flex items-center space-x-2 justify-end">
-            <label className="text-darkfantasy-neutral text-xs font-sans">
+        <div className="flex flex-col space-y-2">
+          <div className="flex items-center space-x-2">
+            <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="party-surprise">
               Party Surprised on 1 to
             </label>
             <input
+              id="party-surprise"
               type="number"
               value={partySurpriseChance}
               onChange={handlePartyChanceChange}
               min="1"
               max="6"
-              className="w-16 px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight text-xs"
+              className="w-16 px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm font-darkfantasy"
+              aria-label="Set party surprise chance"
             />
           </div>
-          <div className="flex items-center space-x-2 justify-end">
-            <label className="text-darkfantasy-neutral text-xs font-sans">
+          <div className="flex items-center space-x-2">
+            <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="monster-surprise">
               Monster Surprised on 1 to
             </label>
             <input
+              id="monster-surprise"
               type="number"
               value={monsterSurpriseChance}
               onChange={handleMonsterChanceChange}
               min="1"
               max="6"
-              className="w-16 px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight text-xs"
+              className="w-16 px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm font-darkfantasy"
+              aria-label="Set monster surprise chance"
             />
           </div>
         </div>
         <div className="flex space-x-4">
           <button
             onClick={() => rollSurprise('Party')}
-            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold flex items-center"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Roll for party surprise"
           >
-            <ShieldAlertIcon className="w-5 h-5 mr-2" />
+            <ShieldAlertIcon className="w-5 h-5 text-darkfantasy-highlight mr-2" />
             Party
           </button>
           <button
             onClick={() => rollSurprise('Monster')}
-            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold flex items-center"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Roll for monster surprise"
           >
-            <ShieldAlertIcon className="w-5 h-5 mr-2" />
+            <ShieldAlertIcon className="w-5 h-5 text-darkfantasy-highlight mr-2" />
             Monster
           </button>
         </div>

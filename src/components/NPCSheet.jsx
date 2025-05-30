@@ -29,8 +29,8 @@ function NPCSheet() {
         save: 0,
         bonusToHit: 0,
         ac: 0,
-        closeQuarterMovement: 0, // New field
-        openFieldMovement: 0,    // New field
+        closeQuarterMovement: 0,
+        openFieldMovement: 0,
         equipment: [],
         proficiencies: [],
         nonWeaponProficiencies: [],
@@ -51,8 +51,8 @@ function NPCSheet() {
         nonWeaponProficiencies: updatedProficiencies || stateCharacter.data?.nonWeaponProficiencies || [],
         currency: updatedCurrency || stateCharacter.data?.currency || defaultCharacter.data.currency,
         gridSize: updatedGridSize || stateCharacter.data?.gridSize || defaultCharacter.data.gridSize,
-        closeQuarterMovement: stateCharacter.data?.closeQuarterMovement || 0, // Initialize if not present
-        openFieldMovement: stateCharacter.data?.openFieldMovement || 0,       // Initialize if not present
+        closeQuarterMovement: stateCharacter.data?.closeQuarterMovement || 0,
+        openFieldMovement: stateCharacter.data?.openFieldMovement || 0,
       },
     };
   });
@@ -164,24 +164,36 @@ function NPCSheet() {
       }
       navigate('/characters');
     } catch (err) {
-      setError('Failed to save NPC: ' + err.message);
+      setError('Failed to save NPC character: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="bg-darkfantasy-primary border-2 border-[#8a7b5e] rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
-        <h1 className="text-3xl font-darkfantasy text-darkfantasy-neutral mb-6 text-center">
-          {character.id ? 'Edit NPC' : 'Create NPC'}
+    <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-8 max-w-4xl mx-auto border-darkfantasy-dark">
+        <h1 className="text-4xl font-darkfantasy-heading text-darkfantasy-accent mb-8 text-center tracking-tight">
+          {character.id ? 'Chronicle of the Entity' : 'Forge a New Entity'}
         </h1>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <p className="text-red-600 text-sm mb-6 text-center font-darkfantasy animate-pulse-darkfantasy">
+            {error}
+          </p>
+        )}
+        {loading && (
+          <p className="text-darkfantasy-neutral text-sm mb-6 text-center font-darkfantasy animate-pulse-darkfantasy">
+            Inscribing the chronicle...
+          </p>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
-          <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">Basic Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-highlight tracking-tight">
+              Essence
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Name
@@ -191,9 +203,10 @@ function NPCSheet() {
                   name="name"
                   value={character.data.name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   required
                   disabled={loading}
+                  aria-label="NPC name"
                 />
               </div>
               <div>
@@ -204,8 +217,9 @@ function NPCSheet() {
                   name="npcType"
                   value={character.data.npcType}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="NPC type"
                 >
                   <option value="Monster">Monster</option>
                   <option value="Humanoid">Humanoid</option>
@@ -224,8 +238,9 @@ function NPCSheet() {
                       name="class"
                       value={character.data.class}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                      className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                       disabled={loading}
+                      aria-label="NPC class"
                     />
                   </div>
                   <div>
@@ -238,8 +253,9 @@ function NPCSheet() {
                       value={character.data.xp}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                      className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                       disabled={loading}
+                      aria-label="NPC XP"
                     />
                   </div>
                 </>
@@ -248,9 +264,11 @@ function NPCSheet() {
           </div>
 
           {/* Combat Stats */}
-          <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">Combat Stats</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-highlight tracking-tight">
+              Prowess in Battle
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   HD (Hit Dice)
@@ -261,8 +279,9 @@ function NPCSheet() {
                   value={character.data.hd}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Hit dice"
                 />
               </div>
               <div>
@@ -275,8 +294,9 @@ function NPCSheet() {
                   value={character.data.hp}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Hit points"
                 />
               </div>
               <div>
@@ -288,8 +308,9 @@ function NPCSheet() {
                   name="save"
                   value={character.data.save}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Save"
                 />
               </div>
               <div>
@@ -301,8 +322,9 @@ function NPCSheet() {
                   name="bonusToHit"
                   value={character.data.bonusToHit}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Bonus to hit"
                 />
               </div>
               <div>
@@ -314,8 +336,9 @@ function NPCSheet() {
                   name="ac"
                   value={character.data.ac}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Armor class"
                 />
               </div>
               <div>
@@ -328,8 +351,9 @@ function NPCSheet() {
                   value={character.data.closeQuarterMovement}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Close quarter movement"
                 />
               </div>
               <div>
@@ -342,10 +366,11 @@ function NPCSheet() {
                   value={character.data.openFieldMovement}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Open field movement"
                 />
-                <p className="text-darkfantasy-neutral text-xs mt-1">
+                <p className="text-darkfantasy-neutral text-xs font-darkfantasy mt-2">
                   Open Field Movement is Close Quarter Movement × 4
                 </p>
               </div>
@@ -353,31 +378,34 @@ function NPCSheet() {
           </div>
 
           {/* Proficiencies Section */}
-          <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">Proficiencies</h2>
-            <div className="space-y-4 mt-4">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-highlight tracking-tight">
+              Mastery of Arts
+            </h2>
+            <div className="space-y-6">
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Weapon Proficiencies
                 </label>
-                <div className="flex flex-wrap gap-2 mb-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {character.data.proficiencies.map((prof) => (
                     <span
                       key={prof}
-                      className="inline-flex items-center px-2 py-1 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded text-sm cursor-pointer"
+                      className="inline-flex items-center px-3 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded text-sm font-darkfantasy cursor-pointer hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow transition-all duration-300"
                       onClick={() => removeProficiency(prof)}
                     >
                       {prof}
-                      <span className="ml-1 text-red-500">×</span>
+                      <span className="ml-2 text-red-600 hover:text-red-800">×</span>
                     </span>
                   ))}
                 </div>
                 <select
                   onChange={handleProficiencyChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Add weapon proficiency"
                 >
-                  <option value="">Add Weapon Proficiency</option>
+                  <option value="">Add Weapon Mastery</option>
                   {proficiencyOptions
                     .filter((prof) => !character.data.proficiencies.includes(prof))
                     .map((prof) => (
@@ -391,11 +419,11 @@ function NPCSheet() {
                 <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Non-Weapon Proficiencies
                 </label>
-                <div className="flex flex-wrap gap-2 mb-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {character.data.nonWeaponProficiencies.map((prof, index) => (
                     <span
                       key={prof.name || index}
-                      className="inline-flex items-center px-2 py-1 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded text-sm"
+                      className="inline-flex items-center px-3 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded text-sm font-darkfantasy shadow-darkfantasy"
                     >
                       {prof.name} ({prof.value}%)
                     </span>
@@ -404,23 +432,26 @@ function NPCSheet() {
                 <Link
                   to="/characters/new/non-weapon-proficiencies"
                   state={{ character, imagePreview }}
-                  className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#661318] font-darkfantasy"
+                  className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                  aria-label="Manage non-weapon proficiencies"
                 >
-                  Manage Non-Weapon Proficiencies
+                  Weave Non-Weapon Proficiencies
                 </Link>
               </div>
             </div>
           </div>
 
           {/* Inventory Section */}
-          <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">Inventory</h2>
-            <div className="mt-4">
-              <div className="flex flex-wrap gap-2 mb-2">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-highlight tracking-tight">
+              Hoard of Relics
+            </h2>
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
                 {character.data.equipment.map((item, index) => (
                   <span
                     key={item.id || index}
-                    className="inline-flex items-center px-2 py-1 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded text-sm"
+                    className="inline-flex items-center px-3 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded text-sm font-darkfantasy shadow-darkfantasy"
                   >
                     {item.name}
                   </span>
@@ -429,22 +460,29 @@ function NPCSheet() {
               <Link
                 to="/characters/new/inventory"
                 state={{ character, imagePreview }}
-                className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#661318] font-darkfantasy"
+                className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Manage inventory"
               >
-                Manage Inventory
+                Curate Inventory
               </Link>
             </div>
           </div>
 
           {/* Description */}
-          <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">Description</h2>
-            <div className="space-y-4 flex flex-col items-center mt-4">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-highlight tracking-tight">
+              Visage and Lore
+            </h2>
+            <div className="space-y-4 flex flex-col items-center">
               <div>
                 <label htmlFor="picture" className="cursor-pointer">
-                  <div className="w-32 h-32 rounded-full bg-darkfantasy-tertiary border border-darkfantasy flex items-center justify-center">
+                  <div className="w-40 h-40 rounded-full bg-darkfantasy-primary border-darkfantasy-dark flex items-center justify-center overflow-hidden shadow-darkfantasy">
                     {imagePreview ? (
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-full" />
+                      <img
+                        src={imagePreview}
+                        alt="NPC portrait"
+                        className="w-full h-full object-cover rounded-full"
+                      />
                     ) : (
                       <Image className="w-8 h-8 text-darkfantasy-neutral" />
                     )}
@@ -457,15 +495,17 @@ function NPCSheet() {
                   onChange={handleImageChange}
                   className="hidden"
                   disabled={loading}
+                  aria-label="Upload NPC portrait"
                 />
               </div>
               <textarea
                 name="description"
                 value={character.data.description}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy h-32"
-                placeholder="Describe the NPC"
+                className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300 h-32"
+                placeholder="Etch the legend of this being..."
                 disabled={loading}
+                aria-label="NPC description"
               />
             </div>
           </div>
@@ -475,9 +515,10 @@ function NPCSheet() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-[#661318] font-darkfantasy"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label="Save NPC"
             >
-              {loading ? 'Saving...' : 'Save NPC'}
+              {loading ? 'Inscribing...' : 'Seal the Chronicle'}
             </button>
           </div>
         </form>

@@ -38,17 +38,19 @@ function ReactionRollGenerator({ diceBox }) {
   };
 
   return (
-    <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
-      <h3 className="text-xl font-bold text-darkfantasy-highlight">Reaction Roller</h3>
-      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex items-center justify-center">
+    <div className="bg-darkfantasy-tertiary shadow-darkfantasy border-darkfantasy rounded-lg p-6 flex flex-col items-center space-y-4 min-h-[200px] texture-darkfantasy">
+      <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight">Reaction Roller</h3>
+      <div className={`text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex items-center justify-center ${rollResult !== null && rollResult <= 4 ? 'text-darkfantasy-accent animate-pulse-darkfantasy' : rollResult >= 10 ? 'text-darkfantasy-highlight' : ''}`}>
         {getReactionMessage()}
       </div>
       <div className="flex space-x-4">
         <button
           onClick={rollReaction}
-          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold flex items-center"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+          aria-label="Roll for reaction"
         >
-          <UsersIcon className="w-5 h-5" />
+          <UsersIcon className="w-5 h-5 text-darkfantasy-highlight mr-2" />
+          Roll
         </button>
       </div>
     </div>

@@ -6,6 +6,7 @@ body {
   color: #d9c7a5;
   margin: 0;
   font-family: Arial, sans-serif;
+  scroll-behavior: smooth;
 }
 
 .grid-stack {

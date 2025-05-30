@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 
 const nonWeaponProficiencyOptions = {
   // Wilderness Exploration Skills
@@ -776,13 +777,11 @@ function NonWeaponProficiencies() {
   const navigate = useNavigate();
   const { character, imagePreview } = location.state || {};
 
-  // Initialize proficiencies from character data
   const [proficiencies, setProficiencies] = useState(
     character?.data?.nonWeaponProficiencies || []
   );
   const [openCategories, setOpenCategories] = useState({});
 
-  // Redirect if no character data
   useEffect(() => {
     if (!character) {
       navigate('/characters/new');
@@ -824,7 +823,6 @@ function NonWeaponProficiencies() {
   };
 
   const handleBack = () => {
-    // Update character with new proficiencies
     const updatedCharacter = {
       ...character,
       data: {
@@ -843,41 +841,48 @@ function NonWeaponProficiencies() {
   };
 
   return (
-    <div className="min-h-screen bg-[#3c2f2f] p-6">
-      <div className="bg-darkfantasy-primary rounded-lg shadow-lg p-6 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-darkfantasy text-darkfantasy-neutral mb-6 text-center">
-          Non-Weapon Proficiencies
+    <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-8 max-w-5xl mx-auto border-darkfantasy-heavy">
+        <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent mb-8 text-center tracking-tight">
+          Codex of Mortal Craft
         </h1>
 
         {/* Selected Proficiencies */}
-        <div className="mb-6">
-          <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral mb-4">
-            Selected Proficiencies
+        <div className="mb-8 space-y-4">
+          <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-highlight tracking-tight mb-6">
+            Chosen Arts
           </h2>
           {proficiencies.length === 0 ? (
-            <p className="text-darkfantasy-neutral">No proficiencies selected.</p>
+            <p className="text-darkfantasy-neutral text-sm font-darkfantasy text-center">
+              No arts have been mastered.
+            </p>
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-4">
               {proficiencies.map((prof) => (
                 <div
                   key={prof.name}
-                  className="flex items-center bg-darkfantasy-tertiary text-darkfantasy-neutral rounded px-2 py-1 text-sm"
+                  className="flex items-center bg-darkfantasy-primary border-darkfantasy rounded px-4 py-2 text-sm shadow-darkfantasy"
                 >
-                  <span>{formatProficiency(prof.name)}</span>
+                  <span className="text-darkfantasy-neutral font-darkfantasy">
+                    {formatProficiency(prof.name)}
+                  </span>
                   <input
                     type="number"
                     value={prof.value}
                     onChange={(e) => updateProficiencyValue(prof.name, e.target.value)}
                     min="0"
                     max="100"
-                    className="w-16 mx-2 px-1 py-0.5 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                    className="w-16 mx-2 px-2 py-1 bg-darkfantasy-background-dark text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
+                    aria-label="Proficiency value"
                   />
-                  <span>%</span>
+                  <span className="text-darkfantasy-neutral">%</span>
                   <button
                     onClick={() => removeProficiency(prof.name)}
-                    className="ml-2 text-red-500 hover:text-red-700"
+                    className="ml-2 text-red-600 hover:text-red-800 transition-all duration-200"
+                    aria-label="Remove proficiency"
                   >
-                    ×
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               ))}
@@ -888,26 +893,27 @@ function NonWeaponProficiencies() {
         {/* Proficiency Categories */}
         <div className="space-y-4">
           {Object.entries(nonWeaponProficiencyOptions).map(([category, stats]) => (
-            <div key={category} className="border border-darkfantasy rounded">
+            <div key={category} className="border-darkfantasy-heavy rounded shadow-darkfantasy">
               <button
                 onClick={() => toggleCategory(category)}
-                className="w-full text-left px-4 py-2 bg-darkfantasy-secondary text-darkfantasy-neutral font-darkfantasy flex justify-between items-center"
+                className="w-full text-left px-4 py-3 bg-darkfantasy-secondary text-darkfantasy-neutral font-darkfantasy flex justify-between items-center hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow transition-all duration-300"
+                aria-label={`Toggle ${category} category`}
               >
-                <span>{category}</span>
-                <span>{openCategories[category] ? '−' : '+'}</span>
+                <span className="text-lg font-darkfantasy-heading">{category}</span>
+                <span>{openCategories[category] ? <ChevronUp className="w-5 h-5 text-darkfantasy-neutral" /> : <ChevronDown className="w-5 h-5 text-darkfantasy-neutral" />}</span>
               </button>
               {openCategories[category] && (
                 <div className="p-4 space-y-4">
                   {Object.entries(stats).map(([stat, proficienciesList]) => (
                     <div key={stat}>
-                      <h3 className="text-lg font-darkfantasy text-darkfantasy-neutral mb-2">
+                      <h3 className="font-darkfantasy-heading text-lg text-darkfantasy-highlight mb-3 tracking-tight">
                         {stat}
                       </h3>
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {Object.entries(proficienciesList).map(([profName, details]) => (
                           <div
                             key={profName}
-                            className="flex justify-between items-center bg-darkfantasy-tertiary p-2 rounded"
+                            className="flex justify-between items-center bg-darkfantasy-primary p-3 rounded border-darkfantasy shadow-darkfantasy"
                           >
                             <div>
                               <p className="text-darkfantasy-neutral font-darkfantasy">
@@ -916,17 +922,18 @@ function NonWeaponProficiencies() {
                               <p className="text-sm text-darkfantasy-neutral">
                                 {details.description}
                               </p>
-                              <p className="text-xs text-darkfantasy-neutral">
-                                Slots: {details.slots} | Difficulty: {details.difficulty} | Training: {details.trainingTime}, {details.trainingCost} cost
-                                {details.restriction && ` | Restriction: ${details.restriction}`}
+                              <p className="text-xs text-gray-400">
+                                Slots: {details.slotText} | Difficulty: {details.difficultyText} | Training: {details.trainingTime}, Cost: {details.trainingCost}
+                                {details.restriction && ` | Curse: ${details.restriction}`}
                               </p>
                             </div>
                             <button
                               onClick={() => addProficiency(profName)}
                               disabled={proficiencies.some((prof) => prof.name === profName)}
-                              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-1 px-3 rounded hover:bg-[#661318] font-darkfantasy disabled:opacity-50"
+                              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-1 px-3 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                              aria-label={`Add ${profName} proficiency`}
                             >
-                              Add
+                              Inscribe
                             </button>
                           </div>
                         ))}
@@ -939,17 +946,18 @@ function NonWeaponProficiencies() {
           ))}
         </div>
 
-        {/* Back Button */}
-        <div className="text-center mt-6">
-          <div>
-            <p>Base skill % = Attribute Value</p>
-            <p>Proficient skill % = Attribute Value × 2</p>
+        {/* Back Button and Info */}
+        <div className="text-center mt-8 space-y-4">
+          <div className="text-darkfantasy-neutral text-sm font-darkfantasy">
+            <p>Base Lore % = Attribute Essence</p>
+            <p>Mastered Art % = Attribute Essence × 2</p>
           </div>
           <button
             onClick={handleBack}
-            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 mt-5 rounded hover:bg-[#661318] font-darkfantasy"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded-lg border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300"
+            aria-label="Back to character sheet"
           >
-            Back to Character Sheet
+            Return to Chronicle
           </button>
         </div>
       </div>

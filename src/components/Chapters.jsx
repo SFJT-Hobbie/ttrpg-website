@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link } from 'react-router-dom';
+import { X } from 'lucide-react';
 import debounce from 'lodash/debounce';
 
 function Chapters() {
@@ -53,60 +54,77 @@ function Chapters() {
   };
 
   return (
-    <div className="min-h-screen bg-darkfantasy-primary p-8">
+    <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+      {/* Subtle background overlay for texture */}
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-darkfantasy text-darkfantasy-neutral">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent tracking-tight">
             Chronicles of the Realm
           </h1>
           <Link
             to="/rules/new"
-            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-[#8a7b5e] font-darkfantasy"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Add new chapter"
           >
-            Add Chapter
+            Inscribe New Chapter
           </Link>
         </div>
+
+        {/* Error Message */}
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          <p className="text-red-600 text-sm mb-6 text-center font-darkfantasy animate-pulse-darkfantasy">
+            {error}
+          </p>
         )}
-        <div className="relative mb-6">
+
+        {/* Search Bar */}
+        <div className="relative mb-8">
           <input
             type="text"
-            placeholder="Search chapters..."
+            placeholder="Seek within the ancient tomes..."
             defaultValue={search}
             onChange={(e) => {
               const debouncedSetSearch = debounce((value) => setSearch(value), 300);
               debouncedSetSearch(e.target.value);
             }}
-            className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy-highlight focus:outline-none"
+            className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
             aria-label="Search chapters"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-darkfantasy-neutral hover:text-darkfantasy-secondary"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-darkfantasy-neutral hover:text-darkfantasy-highlight transition-all duration-300"
               aria-label="Clear search"
             >
-              ✕
+              <X className="w-5 h-5" />
             </button>
           )}
         </div>
+
+        {/* Loading or No Chapters */}
         {loading ? (
-          <p className="text-darkfantasy-neutral text-center">Loading chapters...</p>
+          <p className="text-darkfantasy-neutral text-center font-darkfantasy text-lg animate-pulse-darkfantasy">
+            Unearthing ancient lore...
+          </p>
         ) : chapters.length === 0 ? (
-          <p className="text-darkfantasy-neutral text-center">No chapters found.</p>
+          <p className="text-darkfantasy-neutral text-center font-darkfantasy text-lg">
+            No tomes found in the abyss.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {chapters.map(chapter => (
+          /* Chapters Grid */
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {chapters.map((chapter) => (
               <Link
                 key={chapter.id}
                 to={`/rules/${chapter.id}`}
-                className="bg-darkfantasy-tertiary border border-[#8a7b5e] rounded-lg p-6 shadow-lg hover:bg-darkfantasy-primary transition-colors"
+                className="bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg p-6 shadow-darkfantasy hover:bg-darkfantasy-secondary/80 hover:shadow-darkfantasy-glow transition-all duration-300 group relative overflow-hidden texture-darkfantasy"
               >
-                <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral mb-2">
+                <h2 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight mb-3 group-hover:text-darkfantasy-neutral transition-all duration-300">
                   {chapter.title}
                 </h2>
-                <p className="text-darkfantasy-neutral text-sm">
+                <p className="text-darkfantasy-neutral text-sm font-darkfantasy">
                   {truncateHtml(chapter.content_json.sections[0]?.html || '')}
                 </p>
               </Link>

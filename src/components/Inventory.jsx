@@ -399,10 +399,10 @@ function InventoryGrid() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen bg-darkfantasy-primary p-6 font-darkfantasy">
-        <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 w-full max-w-[800px] mx-auto">
-          <h1 className="text-3xl font-bold text-darkfantasy-highlight mb-6 text-center">
-            Inventory Canvas
+      <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+        <div className="darkfantasy-tertiary rounded-lg shadow-darkfantasy p-8 w-full max-w-[800px] mx-auto border-darkfantasy-heavy">
+          <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent mb-8 text-center tracking-tight">
+            Vault of Relics
           </h1>
           {error && (
             <p className="text-red-500 text-sm mb-4 text-center text-darkfantasy-neutral">{error}</p>
@@ -413,10 +413,10 @@ function InventoryGrid() {
 
           {/* Input and Controls */}
           <div className="mb-6 space-y-4">
-            <h2 className="text-xl font-bold text-darkfantasy-highlight">Manage Items</h2>
+            <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-highlight tracking-tight">Manage Items</h2>
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Item Name
                 </label>
                 <input
@@ -425,14 +425,14 @@ function InventoryGrid() {
                   onChange={(e) => setItemName(e.target.value)}
                   onKeyDown={handleAddKeyPress}
                   placeholder="Enter item name"
-                  className="w-72 px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
+                  className="w-72 px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
                 />
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
                   Grid Rows (1-15)
                 </label>
                 <input
@@ -441,7 +441,7 @@ function InventoryGrid() {
                   onChange={handleGridRowsChange}
                   min="1"
                   max="15"
-                  className="w-24 px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight"
+                  className="w-24 px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
                 />
               </div>
@@ -450,14 +450,14 @@ function InventoryGrid() {
               <button
                 onClick={addItem}
                 disabled={loading || !itemName.trim()}
-                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded-lg border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Add Item
               </button>
               <button
                 onClick={removeItem}
                 disabled={loading || !selectedId}
-                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded-lg border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Remove Selected Item
               </button>
@@ -515,7 +515,7 @@ function InventoryGrid() {
 
           {/* Currency Inputs */}
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-darkfantasy-highlight mb-4">Currency</h2>
+            <h2 className="text-xl font-bold text-darkfantasy-highlight mb-4">Hoard of Coin</h2>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-darkfantasy-neutral text-sm font-bold mb-2">
@@ -567,7 +567,7 @@ function InventoryGrid() {
             <button
               onClick={handleBack}
               disabled={loading}
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-darkfantasy-secondary/80 font-bold disabled:opacity-50"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded-lg border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Back to Character Sheet
             </button>

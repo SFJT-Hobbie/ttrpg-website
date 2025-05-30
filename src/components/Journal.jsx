@@ -4,6 +4,7 @@ import { useAuth } from '../AuthContext.jsx';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { format } from 'date-fns';
+import { Edit2, Trash2, X } from 'lucide-react';
 
 function Journal() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ function Journal() {
   const quillRef = useRef(null);
   const editorRef = useRef(null);
 
-  // Initialize QuillJS editor
+  // Initialize QuillJS editor with custom styling
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
       quillRef.current = new Quill(editorRef.current, {
@@ -40,6 +41,25 @@ function Journal() {
       quillRef.current.on('text-change', () => {
         setContent(quillRef.current.root.innerHTML);
       });
+
+      // Customize Quill editor appearance
+      const editor = editorRef.current.querySelector('.ql-editor');
+      const toolbar = editorRef.current.previousSibling;
+      if (editor) {
+        editor.style.backgroundColor = 'var(--darkfantasy-primary)';
+        editor.style.color = 'var(--darkfantasy-neutral)';
+        editor.style.border = 'var(--border-darkfantasy)';
+        editor.style.borderRadius = '4px';
+        editor.style.padding = '12px';
+        editor.style.minHeight = '200px';
+        editor.style.fontFamily = 'var(--font-darkfantasy)';
+      }
+      if (toolbar) {
+        toolbar.style.backgroundColor = 'var(--darkfantasy-tertiary)';
+        toolbar.style.border = 'var(--border-darkfantasy)';
+        toolbar.style.borderRadius = '4px 4px 0 0';
+        toolbar.style.borderBottom = 'none';
+      }
     }
 
     // Cleanup
@@ -93,11 +113,11 @@ function Journal() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError('Title is required.');
+      setError('A title must be inscribed.');
       return;
     }
     if (!quillRef.current.getText().trim()) {
-      setError('Content is required.');
+      setError('Content must be woven into the chronicle.');
       return;
     }
 
@@ -144,7 +164,7 @@ function Journal() {
       setCharacterId('');
       setEditingJournalId(null);
     } catch (err) {
-      setError('Failed to save journal: ' + err.message);
+      setError('Failed to inscribe chronicle: ' + err.message);
       console.error(err);
     }
   };
@@ -172,7 +192,7 @@ function Journal() {
       setDeleteDialogOpen(false);
       setJournalToDelete(null);
     } catch (err) {
-      setError('Failed to delete journal: ' + err.message);
+      setError('Failed to obliterate chronicle: ' + err.message);
       console.error(err);
     }
   };
@@ -191,18 +211,22 @@ function Journal() {
   const unlinkedJournals = filteredJournals.filter(j => !j.character_id);
 
   return (
-    <div className="min-h-screen bg-darkfantasy-primary p-8">
+    <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+      {/* Subtle background overlay for texture */}
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-darkfantasy text-darkfantasy-neutral mb-6">
+        <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent mb-8 tracking-tight">
           Chronicles of the Realm
         </h1>
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          <p className="text-red-600 text-sm mb-6 text-center font-darkfantasy animate-pulse-darkfantasy">
+            {error}
+          </p>
         )}
 
         {/* WYSIWYG Editor Form */}
-        <form onSubmit={handleSubmit} className="mb-8 bg-darkfantasy-tertiary border border-[#8a7b5e] rounded-lg p-6 shadow-lg">
-          <div className="mb-4">
+        <form onSubmit={handleSubmit} className="mb-12 bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg p-6 shadow-darkfantasy texture-darkfantasy">
+          <div className="mb-6">
             <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
               Entry Title
             </label>
@@ -210,25 +234,27 @@ function Journal() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title your chronicle..."
-              className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+              placeholder="Inscribe the title of your chronicle..."
+              className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
               required
+              aria-label="Journal entry title"
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
               Content
             </label>
-            <div ref={editorRef} className="bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy" />
+            <div ref={editorRef} className="rounded shadow-darkfantasy" />
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
               Bound to Character
             </label>
             <select
               value={characterId}
               onChange={(e) => setCharacterId(e.target.value)}
-              className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+              className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
+              aria-label="Select character"
             >
               <option value="">No Character</option>
               {characters.map((char) => (
@@ -241,7 +267,8 @@ function Journal() {
           <div className="flex gap-4">
             <button
               type="submit"
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-[#8a7b5e] font-darkfantasy"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label={editingJournalId ? 'Update chronicle' : 'Inscribe chronicle'}
             >
               {editingJournalId ? 'Update Chronicle' : 'Inscribe Chronicle'}
             </button>
@@ -255,7 +282,8 @@ function Journal() {
                   setEditingJournalId(null);
                   setError(null);
                 }}
-                className="bg-gray-600 text-darkfantasy-neutral py-2 px-6 rounded hover:bg-gray-700 font-darkfantasy"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Cancel edit"
               >
                 Cancel Edit
               </button>
@@ -264,18 +292,28 @@ function Journal() {
         </form>
 
         {/* Search Input */}
-        <div className="mb-6">
+        <div className="mb-8 relative">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search chronicles..."
-            className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+            placeholder="Seek within your chronicles..."
+            className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
+            aria-label="Search chronicles"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-darkfantasy-neutral hover:text-darkfantasy-highlight transition-all duration-300"
+              aria-label="Clear search"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Journal Sections */}
-        <h2 className="text-2xl font-darkfantasy text-darkfantasy-neutral mb-4">
+        <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-accent mb-6 tracking-tight">
           Your Chronicles
         </h2>
         <div className="space-y-8">
@@ -283,7 +321,7 @@ function Journal() {
           {characters.map((char) => (
             groupedJournals[char.id]?.length > 0 && (
               <div key={char.id}>
-                <h3 className="text-xl font-darkfantasy text-darkfantasy-neutral mb-4">
+                <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight mb-4">
                   Tales of {char.name}
                 </h3>
                 <div className="space-y-4">
@@ -305,7 +343,7 @@ function Journal() {
           {/* Unlinked Journals Section */}
           {unlinkedJournals.length > 0 && (
             <div>
-              <h3 className="text-xl font-darkfantasy text-darkfantasy-neutral mb-4">
+              <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight mb-4">
                 Unbound Chronicles
               </h3>
               <div className="space-y-4">
@@ -324,40 +362,42 @@ function Journal() {
             </div>
           )}
           {filteredJournals.length === 0 && (
-            <p className="text-darkfantasy-neutral text-center">
-              No chronicles match your search.
+            <p className="text-darkfantasy-neutral text-center font-darkfantasy text-lg">
+              No chronicles found in the abyss.
             </p>
           )}
         </div>
-      </div>
 
-      {/* Delete Confirmation Dialog */}
-      {deleteDialogOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-darkfantasy-tertiary border-2 border-[#8a7b5e] rounded-lg p-6 max-w-sm w-full text-center">
-            <h2 className="text-2xl font-darkfantasy text-darkfantasy-neutral mb-4">
-              Erase Chronicle
-            </h2>
-            <p className="text-darkfantasy-neutral mb-6">
-              Are you sure you wish to erase "{journalToDelete.title}" from history?
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setDeleteDialogOpen(false)}
-                className="bg-darkfantasy-primary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-gray-600 font-darkfantasy"
-              >
-                Spare
-              </button>
-              <button
-                onClick={handleDelete}
-                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-red-800 font-darkfantasy"
-              >
-                Obliterate
-              </button>
+        {/* Delete Confirmation Dialog */}
+        {deleteDialogOpen && (
+          <div className="fixed inset-0 bg-darkfantasy-shadow flex items-center justify-center z-50">
+            <div className="bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg p-6 max-w-sm w-full text-center shadow-darkfantasy texture-darkfantasy">
+              <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-accent mb-4">
+                Erase Chronicle
+              </h2>
+              <p className="text-darkfantasy-neutral mb-6 font-darkfantasy">
+                Are you certain you wish to obliterate "{journalToDelete.title}" from existence?
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setDeleteDialogOpen(false)}
+                  className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                  aria-label="Cancel deletion"
+                >
+                  Spare
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-red-800 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                  aria-label="Confirm deletion"
+                >
+                  Obliterate
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -370,30 +410,34 @@ function JournalEntry({ entry, onEdit, onDelete }) {
   };
 
   return (
-    <div className="p-4 bg-darkfantasy-tertiary border border-[#8a7b5e] rounded-lg shadow-md">
-      <h4 className="text-lg font-darkfantasy text-darkfantasy-neutral mb-2">
+    <div className="p-6 bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg shadow-darkfantasy hover:shadow-darkfantasy-glow transition-all duration-300 texture-darkfantasy">
+      <h4 className="font-darkfantasy-heading text-lg text-darkfantasy-highlight mb-2">
         {entry.title}
       </h4>
-      <p className="text-darkfantasy-neutral prose prose-sm max-w-none">
+      <div className="text-darkfantasy-neutral prose prose-sm max-w-none font-darkfantasy mb-4">
         {truncateHtml(entry.content)}
-      </p>
-      <p className="text-sm text-darkfantasy-highlight mt-2">
+      </div>
+      <p className="text-sm text-darkfantasy-neutral mb-1 font-darkfantasy">
         Bound to: {entry.characters?.name || 'None'}
       </p>
-      <p className="text-sm text-darkfantasy-highlight">
+      <p className="text-sm text-darkfantasy-neutral font-darkfantasy">
         Inscribed: {format(new Date(entry.created_at), 'MMMM d, yyyy')}
       </p>
       <div className="flex gap-4 mt-4">
         <button
           onClick={() => onEdit(entry)}
-          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-1 px-4 rounded hover:bg-[#8a7b5e] font-darkfantasy"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+          aria-label="Edit journal entry"
         >
+          <Edit2 className="w-5 h-5 mr-2" />
           Edit
         </button>
         <button
           onClick={() => onDelete(entry)}
-          className="bg-[#661318] text-darkfantasy-neutral py-1 px-4 rounded hover:bg-red-800 font-darkfantasy"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border-darkfantasy hover:bg-red-800 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+          aria-label="Delete journal entry"
         >
+          <Trash2 className="w-5 h-5 mr-2" />
           Delete
         </button>
       </div>

@@ -1,8 +1,15 @@
-import { useState, useEffect } from 'react';
+/* import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { supabase } from '../supabaseClient';
 import { Image } from 'lucide-react';
+import api from '../api'; */
+
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+import { supabase } from '../supabaseClient';
+import { Image, X } from 'lucide-react';
 import api from '../api';
 
 function CharacterSheet() {
@@ -18,7 +25,7 @@ function CharacterSheet() {
     const updatedGridSize = location.state?.updatedGridSize;
     const defaultCharacter = {
       id: null,
-      type: 'PC', // Hardcoded to 'PC'
+      type: 'PC',
       data: {
         name: '',
         race: 'Human',
@@ -45,14 +52,13 @@ function CharacterSheet() {
         currency: { gold: 0, silver: 0, copper: 0 },
         equipment: [],
         baseGrid: { rows: 5, cols: 5 },
-        additionalSlots: {},
+        additionalSlots: [],
         valuables: {},
         hitPoints: 0,
         currentHP: 0,
         equippedArmor: '',
         equippedShield: '',
         customArmor: {},
-        customShield: {},
         status: 'alive',
         deathDate: null,
         deathDescription: '',
@@ -62,24 +68,24 @@ function CharacterSheet() {
         journals: [],
         bonusToHit: 0,
         bonusToSave: 0,
-        closeQuarterMovement: 0, // New field
-        openFieldMovement: 0,   // New field
+        closeQuarterMovement: 0,
+        openFieldMovement: 0,
       },
     };
 
     if (stateCharacter) {
       return {
         ...stateCharacter,
-        type: 'PC', // Ensure type remains 'PC'
+        type: 'PC',
         data: {
           ...stateCharacter.data,
           nonWeaponProficiencies: updatedProficiencies || stateCharacter.data.nonWeaponProficiencies,
           equipment: updatedEquipment || stateCharacter.data.equipment,
           restingSite: stateCharacter.data.restingSite || '',
           currency: updatedCurrency || stateCharacter.data?.currency || defaultCharacter.data.currency,
-          gridSize: updatedGridSize || stateCharacter.data?.gridSize || defaultCharacter.data.gridSize,
-          closeQuarterMovement: stateCharacter.data.closeQuarterMovement || 0, // Initialize if not present
-          openFieldMovement: stateCharacter.data.openFieldMovement || 0,       // Initialize if not present
+          gridSize: updatedGridSize || stateCharacter.data?.gridSize || defaultCharacter.data.baseGrid,
+          closeQuarterMovement: stateCharacter.data.closeQuarterMovement || 0,
+          openFieldMovement: stateCharacter.data.openFieldMovement || 0,
         },
       };
     }
@@ -320,7 +326,7 @@ function CharacterSheet() {
 
       const characterData = {
         user_id: user.id,
-        type: 'PC', // Hardcoded to 'PC'
+        type: 'PC',
         name: character.data.name,
         data: {
           ...character.data,
@@ -379,26 +385,31 @@ function CharacterSheet() {
   };
 
   return (
-    <div className="min-h-screen p-6 relative">
-      <div className={`bg-darkfantasy-primary border-[#8a7b5e] border-2 rounded-lg shadow-lg p-6 max-w-4xl mx-auto ${character.data.status === 'deceased' ? 'blur-sm' : ''}`}>
-        <h1 className="text-3xl font-darkfantasy text-darkfantasy-neutral mb-6 text-center">
-          {character.id ? 'Player Character Sheet' : 'Create Player Character'}
+    <div className="min-h-screen p-6 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className={`bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg shadow-darkfantasy p-6 max-w-4xl mx-auto ${character.data.status === 'deceased' ? 'blur-sm' : ''}`}>
+        <h1 className="text-3xl font-darkfantasy-heading text-darkfantasy-accent mb-6 text-center">
+          {character.id ? 'Chronicle of the Hero' : 'Forge a New Hero'}
         </h1>
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          <p className="text-red-600 text-sm mb-4 text-center font-darkfantasy animate-pulse-darkfantasy">
+            {error}
+          </p>
         )}
         {loading && (
-          <p className="text-darkfantasy-neutral text-sm mb-4 text-center">Loading...</p>
+          <p className="text-darkfantasy-neutral text-sm mb-4 text-center font-darkfantasy animate-pulse-darkfantasy">
+            Inscribing the chronicle...
+          </p>
         )}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">
-              Basic Information
+            <h2 className="text-xl font-darkfantasy-heading text-darkfantasy-highlight">
+              Essence of the Soul
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Name
                 </label>
                 <input
@@ -406,21 +417,23 @@ function CharacterSheet() {
                   name="name"
                   value={character.data.name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   required
                   disabled={loading}
+                  aria-label="Character name"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Race
                 </label>
                 <select
                   name="race"
                   value={character.data.race}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Character race"
                 >
                   {races.map((race) => (
                     <option key={race} value={race}>
@@ -430,15 +443,16 @@ function CharacterSheet() {
                 </select>
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Class
                 </label>
                 <select
                   name="class"
                   value={character.data.class}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Character class"
                 >
                   {classes.map((cls) => (
                     <option key={cls} value={cls}>
@@ -448,15 +462,16 @@ function CharacterSheet() {
                 </select>
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Alignment
                 </label>
                 <select
                   name="alignment"
                   value={character.data.alignment}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Character alignment"
                 >
                   {alignments.map((align) => (
                     <option key={align} value={align}>
@@ -466,15 +481,16 @@ function CharacterSheet() {
                 </select>
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Age Stage
                 </label>
                 <select
                   name="ageStage"
                   value={character.data.ageStage}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Character age stage"
                 >
                   {ageStages.map((stage) => (
                     <option key={stage} value={stage}>
@@ -484,7 +500,7 @@ function CharacterSheet() {
                 </select>
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Level
                 </label>
                 <input
@@ -493,12 +509,13 @@ function CharacterSheet() {
                   value={character.data.level}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Character level"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   XP
                 </label>
                 <input
@@ -507,8 +524,9 @@ function CharacterSheet() {
                   value={character.data.xp}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Character XP"
                 />
               </div>
             </div>
@@ -516,13 +534,13 @@ function CharacterSheet() {
 
           {/* Ability Scores */}
           <div className="space-y-4">
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">
-              Ability Scores
+            <h2 className="text-xl font-darkfantasy-heading text-darkfantasy-highlight">
+              Prowess of the Flesh
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {Object.keys(character.data.abilityScores).map((score) => (
                 <div key={score}>
-                  <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                  <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                     {score.charAt(0).toUpperCase() + score.slice(1)}
                   </label>
                   <input
@@ -532,8 +550,9 @@ function CharacterSheet() {
                     onChange={(e) => handleChange(e, 'abilityScores', score)}
                     min="3"
                     max="18"
-                    className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                    className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                     disabled={loading}
+                    aria-label={`Character ${score}`}
                   />
                 </div>
               ))}
@@ -542,38 +561,39 @@ function CharacterSheet() {
 
           {/* Languages and Proficiencies */}
           <div className="space-y-4">
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">
-              Languages and Proficiencies
+            <h2 className="text-xl font-darkfantasy-heading text-darkfantasy-highlight">
+              Tongues and Talents
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
-                  Languages (Common is mandatory)
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
+                  Languages (Common is eternal)
                 </label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {character.data.languages.map((lang) => (
                     <span
                       key={lang}
-                      className={`inline-flex items-center px-2 py-1 rounded text-sm ${
+                      className={`inline-flex items-center px-3 py-1 rounded text-sm font-darkfantasy ${
                         lang === 'Common'
                           ? 'bg-darkfantasy-secondary text-darkfantasy-neutral'
-                          : 'bg-darkfantasy-tertiary text-darkfantasy-neutral cursor-pointer'
+                          : 'bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy cursor-pointer hover:bg-darkfantasy-highlight/50 transition-all duration-300'
                       }`}
                       onClick={() => lang !== 'Common' && removeLanguage(lang)}
                     >
                       {lang}
                       {lang !== 'Common' && (
-                        <span className="ml-1 text-red-500">×</span>
+                        <X className="ml-2 w-4 h-4 text-red-600" />
                       )}
                     </span>
                   ))}
                 </div>
                 <select
                   onChange={handleLanguageChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Add language"
                 >
-                  <option value="">Add Language</option>
+                  <option value="">Add Tongue</option>
                   {additionalLanguages
                     .filter((lang) => !character.data.languages.includes(lang))
                     .map((lang) => (
@@ -584,14 +604,14 @@ function CharacterSheet() {
                 </select>
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Non-Weapon Proficiencies
                 </label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {character.data.nonWeaponProficiencies.map((prof) => (
                     <span
                       key={prof.name}
-                      className="inline-flex items-center px-2 py-1 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded text-sm"
+                      className="inline-flex items-center px-3 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded text-sm font-darkfantasy"
                     >
                       {formatProficiency(prof.name)} ({prof.value}%)
                     </span>
@@ -600,33 +620,35 @@ function CharacterSheet() {
                 <Link
                   to="/characters/new/non-weapon-proficiencies"
                   state={{ character, imagePreview }}
-                  className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#661318] font-darkfantasy"
+                  className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                  aria-label="Manage non-weapon proficiencies"
                 >
-                  Manage Non-Weapon Proficiencies
+                  Weave Non-Weapon Proficiencies
                 </Link>
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Weapon Proficiencies
                 </label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {character.data.weaponProficiencies.map((prof) => (
                     <span
                       key={prof}
-                      className="inline-flex items-center px-2 py-1 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded text-sm cursor-pointer"
+                      className="inline-flex items-center px-3 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded text-sm font-darkfantasy cursor-pointer hover:bg-darkfantasy-highlight/50 transition-all duration-300"
                       onClick={() => removeWeaponProficiency(prof)}
                     >
                       {formatProficiency(prof)}
-                      <span className="ml-1 text-red-500">×</span>
+                      <X className="ml-2 w-4 h-4 text-red-600" />
                     </span>
                   ))}
                 </div>
                 <select
                   onChange={handleWeaponProficiencyChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Add weapon proficiency"
                 >
-                  <option value="">Add Weapon Proficiency</option>
+                  <option value="">Add Weapon Mastery</option>
                   {weaponProficiencyOptions
                     .filter((prof) => !character.data.weaponProficiencies.includes(prof))
                     .map((prof) => (
@@ -641,12 +663,12 @@ function CharacterSheet() {
 
           {/* Health, Combat Stats, and Inventory */}
           <div className="space-y-4">
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">
-              Health, Combat Stats, and Inventory
+            <h2 className="text-xl font-darkfantasy-heading text-darkfantasy-highlight">
+              Vitality and Armaments
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Hit Points
                 </label>
                 <input
@@ -655,12 +677,13 @@ function CharacterSheet() {
                   value={character.data.hitPoints}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Hit points"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Current HP
                 </label>
                 <input
@@ -669,12 +692,13 @@ function CharacterSheet() {
                   value={character.data.currentHP}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Current HP"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Bonus to Hit
                 </label>
                 <input
@@ -682,12 +706,13 @@ function CharacterSheet() {
                   name="bonusToHit"
                   value={character.data.bonusToHit}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Bonus to hit"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Bonus to Save
                 </label>
                 <input
@@ -695,12 +720,13 @@ function CharacterSheet() {
                   name="bonusToSave"
                   value={character.data.bonusToSave}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Bonus to save"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Equipped Armor
                 </label>
                 <input
@@ -708,12 +734,13 @@ function CharacterSheet() {
                   name="equippedArmor"
                   value={character.data.equippedArmor}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral Rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Equipped armor"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Equipped Shield
                 </label>
                 <input
@@ -721,12 +748,13 @@ function CharacterSheet() {
                   name="equippedShield"
                   value={character.data.equippedShield}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Equipped shield"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Close Quarter Movement
                 </label>
                 <input
@@ -735,12 +763,13 @@ function CharacterSheet() {
                   value={character.data.closeQuarterMovement}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Close quarter movement"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Open Field Movement
                 </label>
                 <input
@@ -749,22 +778,23 @@ function CharacterSheet() {
                   value={character.data.openFieldMovement}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+                  className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
                   disabled={loading}
+                  aria-label="Open field movement"
                 />
-                <p className="text-darkfantasy-neutral text-xs mt-1">
+                <p className="text-darkfantasy-neutral text-xs font-darkfantasy mt-1">
                   Open Field Movement is Close Quarter Movement × 4
                 </p>
               </div>
               <div className="col-span-2">
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
                   Inventory
                 </label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {character.data.equipment.map((item) => (
                     <span
                       key={item.id}
-                      className="inline-flex items-center px-2 py-1 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded text-sm"
+                      className="inline-flex items-center px-3 py-1 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded text-sm font-darkfantasy"
                     >
                       {item.name}
                     </span>
@@ -774,13 +804,14 @@ function CharacterSheet() {
                   <Link
                     to="/characters/new/inventory"
                     state={{ character, imagePreview }}
-                    className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#661318] font-darkfantasy"
+                    className="inline-block bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                    aria-label="Manage inventory"
                   >
-                    Manage Inventory
+                    Curate Inventory
                   </Link>
                 ) : (
-                  <span className="text-darkfantasy-neutral text-sm">
-                    Save character to manage inventory
+                  <span className="text-darkfantasy-neutral text-sm font-darkfantasy">
+                    Inscribe character to curate inventory
                   </span>
                 )}
               </div>
@@ -789,13 +820,13 @@ function CharacterSheet() {
 
           {/* Description */}
           <div className="space-y-4">
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral">
-              Description
+            <h2 className="text-xl font-darkfantasy-heading text-darkfantasy-highlight">
+              Visage and Lore
             </h2>
             <div className="space-y-4 flex flex-col items-center">
               <div>
                 <label htmlFor="profile-image" className="cursor-pointer">
-                  <div className="w-50 h-50 rounded-full bg-darkfantasy-tertiary border border-darkfantasy flex items-center justify-center overflow-hidden">
+                  <div className="w-40 h-40 rounded-full bg-dark border border-darkfantasy-heavy flex items-center justify-center overflow-hidden shadow-darkfantasy">
                     {imagePreview || character.data.picture ? (
                       <img
                         src={imagePreview || character.data.picture || 'https://via.placeholder.com/150'}
@@ -815,18 +846,22 @@ function CharacterSheet() {
                   onChange={handleImageChange}
                   className="hidden"
                   disabled={loading}
+                  aria-label="Upload profile image"
                 />
                 {imageError && (
-                  <p className="text-red-500 text-sm mt-2">{imageError}</p>
+                  <p className="text-red-600 text-sm mt-2 font-darkfantasy text-center">
+                    {imageError}
+                  </p>
                 )}
               </div>
               <textarea
                 name="description"
                 value={character.data.description}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none h-32"
-                placeholder="Describe your character..."
+                className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300 h-32"
+                placeholder="Etch the legend of your hero..."
                 disabled={loading}
+                aria-label="Character description"
               />
             </div>
           </div>
@@ -836,9 +871,10 @@ function CharacterSheet() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-[#661318] font-darkfantasy disabled:opacity-50"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Save character"
             >
-              {loading ? 'Saving...' : 'Save Character'}
+              {loading ? 'Inscribing...' : 'Seal the Chronicle'}
             </button>
           </div>
         </form>
@@ -846,48 +882,54 @@ function CharacterSheet() {
 
       {/* DECEASED Overlay */}
       {character.data.status === 'deceased' && (
-        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-black border-2 border-[#8a7b5e] rounded-lg p-8 max-w-md w-full text-center">
-            <h1 className="text-5xl font-darkfantasy text-[#661318] mb-4 tracking-wider">DECEASED</h1>
-            <div className="space-y-4 mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+          <div className="bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg p-6 max-w-md w-full text-center shadow-darkfantasy">
+            <h1 className="text-4xl font-darkfantasy-heading text-darkfantasy-accent mb-4">
+              FALLEN
+            </h1>
+            <div className="space-y-4">
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
-                  Death Description
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
+                  Tale of Demise
                 </label>
                 <textarea
                   name="deathDescription"
                   value={character.data.deathDescription}
                   onChange={handleDeathFieldChange}
-                  className="w-full px-3 py-2 text-darkfantasy-neutral rounded border border-[#8a7b5e] focus:outline-none h-24"
-                  placeholder="Describe the circumstances of their demise..."
+                  className="w-full px-4 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300 h-24"
+                  placeholder="Recount the grim fate that claimed them..."
+                  aria-label="Death description"
                 />
               </div>
               <div>
-                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
-                  Resting Site
+                <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-1">
+                  Resting Place
                 </label>
                 <input
                   type="text"
                   name="restingSite"
                   value={character.data.restingSite}
                   onChange={handleDeathFieldChange}
-                  className="w-full px-3 py-2 text-darkfantasy-neutral rounded border border-[#8a7b5e] focus:outline-none"
-                  placeholder="Where their remains lie..."
+                  className="w-full px-4 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
+                  placeholder="Where their ashes rest..."
+                  aria-label="Resting site"
                 />
               </div>
             </div>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-2 mt-4">
               <button
                 onClick={() => navigate('/characters')}
-                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-[#661318] font-darkfantasy"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Return to characters"
               >
-                Go Back
+                Return
               </button>
               <button
                 onClick={() => setReviveDialogOpen(true)}
-                className="bg-[#661318] text-darkfantasy-neutral py-2 px-6 rounded hover:bg-red-800 font-darkfantasy"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-dark-accent hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Revive character"
               >
-                Revive
+                Defy Death
               </button>
             </div>
           </div>
@@ -896,26 +938,28 @@ function CharacterSheet() {
 
       {/* Revive Confirmation Dialog */}
       {reviveDialogOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-black border-2 border-[#8a7b5e] rounded-lg p-6 max-w-sm w-full text-center">
-            <h2 className="text-2xl font-darkfantasy text-darkfantasy-neutral mb-4">
-              Defy the Veil of Death
+        <div className="fixed inset-0 bg-darkfantasy-overlay bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-darkfantasy-tertiary border-darkfantasy-heavy rounded p-6 max-w-sm w-full text-center shadow-darkfantasy">
+            <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-accent mb-4">
+              Defy the Veil
             </h2>
-            <p className="text-darkfantasy-neutral mb-6">
-              Are you sure you want to bring {character.data.name} back from the dead? Tampering with life and death may unleash dire consequences, as the balance of mortal affairs is not to be trifled with.
+            <p className="text-darkfantasy-neutral mb-4 font-darkfantasy">
+              Dare you wrench {character.data.name} from the abyss? Such defiance of death may unravel the threads of fate, invoking curses untold.
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-2">
               <button
                 onClick={() => setReviveDialogOpen(false)}
-                className="bg-darkfantasy-tertiary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-gray-600 font-darkfantasy"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Cancel revival"
               >
-                Cancel
+                Spare Fate
               </button>
               <button
                 onClick={handleRevive}
-                className="bg-[#661318] text-darkfantasy-neutral py-2 px-6 rounded hover:bg-red-800 font-darkfantasy"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded border border-darkfantasy hover:bg-dark-accent hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Confirm revival"
               >
-                Yes
+                Resurrect
               </button>
             </div>
           </div>

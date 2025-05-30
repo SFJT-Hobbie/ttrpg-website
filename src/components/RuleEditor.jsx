@@ -40,8 +40,16 @@ function RuleEditor() {
             ['clean'],
           ],
         },
-        placeholder: 'Write the rule...',
+        placeholder: 'Etch the sacred law...',
       });
+
+      // Customize Quill editor styles to match theme
+      const editor = editorRef.current.querySelector('.ql-container');
+      const toolbar = editorRef.current.querySelector('.ql-toolbar');
+      if (editor && toolbar) {
+        editor.classList.add('bg-darkfantasy-primary', 'text-darkfantasy-neutral', 'border-darkfantasy', 'rounded');
+        toolbar.classList.add('bg-darkfantasy-secondary', 'border-darkfantasy', 'text-darkfantasy-neutral');
+      }
 
       quillRef.current.on('text-change', () => {
         const html = quillRef.current.root.innerHTML;
@@ -95,7 +103,7 @@ function RuleEditor() {
           }
         }
       } catch (err) {
-        setError('Failed to load data: ' + err.message);
+        setError('Failed to unveil the annals: ' + err.message);
         console.error(err);
       }
     }
@@ -106,12 +114,12 @@ function RuleEditor() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError('Title is required.');
+      setError('A title must be forged for the law.');
       return;
     }
     const quillText = quillRef.current?.getText().trim();
     if (!quillText) {
-      setError('Content is required.');
+      setError('The law must bear sacred text.');
       return;
     }
 
@@ -132,7 +140,7 @@ function RuleEditor() {
             updated_at: new Date().toISOString(),
           })
           .eq('id', editId);
-        if (error) throw new Error(error.message.includes('permission') ? 'Unauthorized update' : error.message);
+        if (error) throw new Error(error.message.includes('permission') ? 'Unauthorized alteration' : error.message);
       } else {
         const { data: existingRules, error: fetchError } = await supabase
           .from('rules')
@@ -147,11 +155,11 @@ function RuleEditor() {
             parent_id: parentId || null,
             order_index: parentId ? 0 : existingRules.length,
           });
-        if (error) throw new Error(error.message.includes('permission') ? 'Unauthorized insert' : error.message);
+        if (error) throw new Error(error.message.includes('permission') ? 'Unauthorized inscription' : error.message);
       }
       navigate(parentId ? `/rules/${parentId}` : '/rules');
     } catch (err) {
-      setError('Failed to save rule: ' + err.message);
+      setError('Failed to etch the law: ' + err.message);
       console.error(err);
     }
   };
@@ -163,59 +171,62 @@ function RuleEditor() {
         .from('rules')
         .delete()
         .eq('id', editId);
-      if (error) throw new Error(error.message.includes('permission') ? 'Unauthorized deletion' : error.message);
+      if (error) throw new Error(error.message.includes('permission') ? 'Unauthorized obliteration' : error.message);
       setDeleteDialogOpen(false);
       navigate('/rules');
     } catch (err) {
-      setError('Failed to delete rule: ' + err.message);
+      setError('Failed to erase the law: ' + err.message);
       console.error(err);
     }
   };
 
   return (
-    <div className="min-h-screen bg-darkfantasy-primary p-8">
+    <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-darkfantasy text-darkfantasy-neutral mb-6">
-          {editId ? 'Edit Rule' : 'Create New Rule'}
+        <h1 className="text-4xl font-darkfantasy-heading text-darkfantasy-accent mb-8 text-center tracking-tight">
+          {editId ? 'Amend the Sacred Law' : 'Forge a New Law'}
         </h1>
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          <p className="text-red-600 text-sm mb-6 text-center font-darkfantasy animate-pulse-darkfantasy">
+            {error}
+          </p>
         )}
-        <form onSubmit={handleSubmit} className="bg-darkfantasy-tertiary border border-[#8a7b5e] rounded-lg p-6 shadow-lg">
-          <div className="mb-4">
+        <form onSubmit={handleSubmit} className="bg-darkfantasy-tertiary border-darkfantasy-dark rounded-lg p-8 shadow-darkfantasy">
+          <div className="mb-6">
             <label htmlFor="rule-title" className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
-              Rule Title
+              Law Title
             </label>
             <input
               id="rule-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title the rule..."
-              className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-highlight focus:outline-none"
+              placeholder="Name the sacred law..."
+              className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
               required
               aria-label="Rule title"
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="rule-content" className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
-              Content
+          <div className="mb-6">
+            <label htmlFor="rule-content" className="block text-darkfantasy-neutraltext-sm font-darkfantasy mb-2">
+              Sacred Text
             </label>
-            <div id="rule-content" ref={editorRef} className="bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-highlight" />
+            <div id="rule-content" ref={editorRef} className="min-h-[300px] bg-darkfantasy-primary" />
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label htmlFor="parent-chapter" className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
-              Parent Chapter
+              Tome of Origin
             </label>
             <select
               id="parent-chapter"
               value={parentId}
               onChange={(e) => setParentId(e.target.value)}
-              className="w-full px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-highlight focus:outline-none"
+              className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
               aria-label="Parent chapter"
             >
-              <option value="">No Parent</option>
-              {chapters.map(chapter => (
+              <option value="">No Parent Tome</option>
+              {chapters.map((chapter) => (
                 <option key={chapter.id} value={chapter.id}>
                   {chapter.title}
                 </option>
@@ -225,24 +236,27 @@ function RuleEditor() {
           <div className="flex gap-4">
             <button
               type="submit"
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-[#8a7b5e] font-darkfantasy"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label={editId ? 'Update rule' : 'Add rule'}
             >
-              {editId ? 'Update Rule' : 'Add Rule'}
+              {editId ? 'Inscribe Changes' : 'Declare Law'}
             </button>
             <button
               type="button"
               onClick={() => navigate(parentId ? `/rules/${parentId}` : '/rules')}
-              className="bg-gray-600 text-darkfantasy-neutral py-2 px-6 rounded hover:bg-gray-700 font-darkfantasy"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label="Cancel"
             >
-              Cancel
+              Abandon
             </button>
             {editId && (
               <button
                 type="button"
                 onClick={() => setDeleteDialogOpen(true)}
-                className="bg-[#661318] text-darkfantasy-neutral py-2 px-6 rounded hover:bg-red-800 font-darkfantasy"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded border-darkfantasy hover:bg-red-800/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Delete rule"
               >
-                Delete
+                Obliterate
               </button>
             )}
           </div>
@@ -251,26 +265,28 @@ function RuleEditor() {
         {/* Delete Confirmation Dialog */}
         {deleteDialogOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-            <div className="bg-darkfantasy-tertiary border-2 border-[#8a7b5e] rounded-lg p-6 max-w-sm w-full text-center">
-              <h2 className="text-2xl font-darkfantasy text-darkfantasy-neutral mb-4">
-                Erase Rule
+            <div className="bg-darkfantasy-tertiary border-darkfantasy-dark rounded-lg p-8 max-w-sm w-full text-center shadow-darkfantasy">
+              <h2 className="text-2xl font-darkfantasy-heading text-darkfantasy-accent mb-4 tracking-tight">
+                Erase Sacred Law
               </h2>
-              <p className="text-darkfantasy-neutral mb-6">
-                Are you sure you wish to erase "{title}" and its subchapters?
+              <p className="text-darkfantasy-neutral text-sm font-darkfantasy mb-6">
+                Do you truly wish to erase "{title}" and its subchapters?
               </p>
               <div className="flex justify-center gap-4">
                 <button
                   onClick={() => setDeleteDialogOpen(false)}
-                  className="bg-darkfantasy-primary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-gray-600 font-darkfantasy"
+                  className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                  aria-label="Cancel deletion"
                 >
                   Spare
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded hover:bg-red-800 font-darkfantasy"
+                  className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-8 rounded border-darkfantasy hover:bg-red-800/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                  aria-label="Confirm deletion"
                 >
                   Obliterate
-                </button>
+              </button>
               </div>
             </div>
           </div>

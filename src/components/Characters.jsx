@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext.jsx';
 import { Link } from 'react-router-dom';
-import { Trash2, Skull, User } from 'lucide-react';
+import { Trash2, Skull, User, X } from 'lucide-react';
 
 function Characters() {
   const { user } = useAuth();
@@ -72,37 +72,41 @@ function Characters() {
   const deceasedCharacters = characters.filter(char => char.data?.status === 'deceased');
 
   return (
-    <div className="min-h-screen bg-[#3c2f2f] p-8">
+    <div className="min-h-screen p-8 font-darkfantasy relative overflow-hidden">
+      {/* Subtle background overlay for texture */}
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-darkfantasy text-darkfantasy-neutral">
-            Your Characters
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent tracking-tight">
+            Roster of the Realm
           </h1>
-          <div className="space-x-4">
+          <div className="flex space-x-4">
             <Link
               to="/characters/new/pc"
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#3c2f2f] font-darkfantasy"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label="Create player character"
             >
-              Create PC
+              Forge PC
             </Link>
             <Link
               to="/characters/new/npc"
-              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#3c2f2f] font-darkfantasy"
+              className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+              aria-label="Create non-player character"
             >
-              Create NPC
+              Forge NPC
             </Link>
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-12">
           <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral mb-4">
-              Alive Characters
+            <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-highlight mb-6 tracking-tight">
+              Living Legends
             </h2>
-            <div className="w-full">
+            <div className="space-y-4">
               {aliveCharacters.length === 0 ? (
-                <p className="text-darkfantasy-neutral text-center">
-                  No alive characters found.
+                <p className="text-darkfantasy-neutral text-center font-darkfantasy text-lg">
+                  No living souls remain in the realm.
                 </p>
               ) : (
                 aliveCharacters.map(char => (
@@ -113,13 +117,13 @@ function Characters() {
           </div>
 
           <div>
-            <h2 className="text-xl font-darkfantasy text-darkfantasy-neutral mb-4">
-              Deceased Characters
+            <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-highlight mb-6 tracking-tight">
+              Fallen Heroes
             </h2>
-            <div className="w-full">
+            <div className="space-y-4">
               {deceasedCharacters.length === 0 ? (
-                <p className="text-darkfantasy-neutral text-center">
-                  No deceased characters found.
+                <p className="text-darkfantasy-neutral text-center font-darkfantasy text-lg">
+                  No souls have yet perished.
                 </p>
               ) : (
                 deceasedCharacters.map(char => (
@@ -133,28 +137,33 @@ function Characters() {
 
       {modalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+          className="fixed inset-0 bg-darkfantasy-shadow flex items-center justify-center z-50"
           onClick={closeModal}
         >
           <div
-            className="bg-darkfantasy-primary p-6 rounded-lg text-darkfantasy-neutral"
+            className="bg-darkfantasy-tertiary border-darkfantasy-heavy rounded-lg p-6 max-w-sm w-full text-center shadow-darkfantasy texture-darkfantasy"
             onClick={e => e.stopPropagation()}
           >
-            <p className="mb-4">
+            <h2 className="font-darkfantasy-heading text-2xl text-darkfantasy-accent mb-4">
+              {modalAction === 'delete' ? 'Erase from History' : 'Mark as Fallen'}
+            </h2>
+            <p className="text-darkfantasy-neutral mb-6 font-darkfantasy">
               {modalAction === 'delete'
-                ? `Are you sure you want to delete ${modalCharacter.name}?`
-                : `Are you sure you want to mark ${modalCharacter.name} as deceased?`}
+                ? `Are you certain you wish to erase ${modalCharacter.name} from the annals?`
+                : `Are you certain you wish to mark ${modalCharacter.name} as fallen?`}
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={confirmAction}
-                className="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-red-800 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Confirm action"
               >
                 Yes
               </button>
               <button
                 onClick={closeModal}
-                className="bg-gray-600 text-white py-1 px-3 rounded hover:bg-gray-700"
+                className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+                aria-label="Cancel action"
               >
                 No
               </button>
@@ -170,57 +179,62 @@ function CharacterCard({ char, openModal }) {
   const status = char.data?.status || 'alive';
 
   return (
-    <div className="p-4 bg-darkfantasy-primary rounded-lg border border-darkfantasy shadow-lg flex items-center space-x-4 mb-4">
+    <div className="p-6 bg-darkfantasy-tertiary rounded-lg border-darkfantasy-heavy shadow-darkfantasy hover:shadow-darkfantasy-glow flex items-center space-x-6 mb-4 transition-all duration-300 texture-darkfantasy">
       <div className="flex-shrink-0">
         {char.data?.picture ? (
           <img
             src={char.data.picture}
             alt={char.name}
-            className="w-32 h-32 rounded-full object-cover"
+            className="w-24 h-24 rounded-full object-cover border-darkfantasy"
           />
         ) : (
-          <User className="w-32 h-32 text-darkfantasy-neutral" />
+          <User className="w-24 h-24 text-darkfantasy-neutral" />
         )}
       </div>
 
       <div className="flex-grow">
-        <h3 className="text-lg font-darkfantasy text-darkfantasy-neutral">
+        <h3 className="font-darkfantasy-heading text-lg text-darkfantasy-highlight mb-2">
           {char.name}
         </h3>
-        <p className="text-darkfantasy-highlight">Type: {char.type}</p>
+        <p className="text-darkfantasy-neutral text-sm font-darkfantasy">
+          Type: {char.type}
+        </p>
         {char.type === 'PC' && (
           <div>
-            <p className="text-darkfantasy-highlight">
-              Race: {char.data?.race || 'N/A'}
+            <p className="text-darkfantasy-neutral text-sm font-darkfantasy">
+              Race: {char.data?.race || 'Unknown'}
             </p>
-            <p className="text-darkfantasy-highlight">
-              Class: {char.data?.class || 'N/A'}
+            <p className="text-darkfantasy-neutral text-sm font-darkfantasy">
+              Class: {char.data?.class || 'Unknown'}
             </p>
-            <p className="text-darkfantasy-highlight">
+            <p className="text-darkfantasy-neutral text-sm font-darkfantasy">
               Level: {char.data?.level || 'N/A'}
             </p>
           </div>
         )}
-        <div className="flex space-x-4 mt-2">
+        <div className="mt-3">
           <Link
             to={`/characters/edit/${char.id}`}
-            className="text-darkfantasy-highlight hover:underline"
+            className="text-darkfantasy-highlight hover:text-darkfantasy-neutral font-darkfantasy text-sm transition-all duration-300"
+            aria-label={`View ${char.name}'s details`}
           >
-            View Character
+            View Chronicle
           </Link>
         </div>
       </div>
 
-      <div className="flex space-x-8">
+      <div className="flex space-x-4">
         {status === 'alive' && (
           <Skull
-            className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700"
+            className="w-5 h-5 text-darkfantasy-neutral cursor-pointer hover:text-darkfantasy-highlight transition-all duration-300"
             onClick={() => openModal('toggleStatus', char)}
+            aria-label={`Mark ${char.name} as deceased`}
           />
         )}
         <Trash2
-          className="w-5 h-5 text-red-500 cursor-pointer hover:text-red-700"
+          className="w-5 h-5 text-darkfantasy-neutral cursor-pointer hover:text-red-600 transition-all duration-300"
           onClick={() => openModal('delete', char)}
+          aria-label={`Delete ${char.name}`}
         />
       </div>
     </div>

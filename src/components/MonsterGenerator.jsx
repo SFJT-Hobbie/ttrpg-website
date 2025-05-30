@@ -193,9 +193,9 @@ function MonsterGenerator({ diceBox, onMonsterGenerated }) {
     setEntityType('Aberraciones Mágicas');
   };
 
-  // Determine card class based on entity type
-  const getCardClass = (type) => {
-    switch (type) {
+  // Determine card class for entity type (preserved)
+  const getCardClass = (entityType) => {
+    switch (entityType) {
       case 'Aberraciones Mágicas':
         return 'monster-card-aberracion';
       case 'Los Otros':
@@ -203,42 +203,54 @@ function MonsterGenerator({ diceBox, onMonsterGenerated }) {
       case 'Las Bondades':
         return 'monster-card-bondades';
       default:
-        return 'monster-card-bondades';
+        return 'monster-card';
     }
   };
 
   return (
-    <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
-      <h3 className="text-xl font-bold text-darkfantasy-highlight">Eldritch Generator</h3>
-      <div className="w-full grid grid-cols-2 gap-2">
+    <div className="bg-darkfantasy-tertiary shadow-darkfantasy border-darkfantasy rounded-lg p-6 flex flex-col items-center space-y-6 min-h-[200px] texture-darkfantasy">
+      <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight">Eldritch Transmutation</h3>
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col">
-          <label className="text-darkfantasy-neutral text-xs font-sans">Caster Level</label>
+          <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="caster-level" title="Caster level for summoning">
+            Caster Level
+          </label>
           <input
             type="number"
+            id="caster-level"
             value={casterLevel}
             onChange={(e) => setCasterLevel(e.target.value)}
             min="1"
             placeholder="e.g., 3"
-            className="px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight text-xs"
+            className="px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight text-sm font-darkfantasy"
+            aria-label="Enter caster level"
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-darkfantasy-neutral text-xs font-sans">Desired HD</label>
+          <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="desired-hd" title="Desired hit dice for the creature">
+            Desired HD
+          </label>
           <input
             type="number"
+            id="desired-hd"
             value={desiredHD}
-            onChange={(e) => setDesiredHD(e.target.value)} 
+            onChange={(e) => setDesiredHD(e.target.value)}
             min="1"
             placeholder="e.g., 5"
-            className="px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight text-xs"
+            className="px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight text-sm font-darkfantasy"
+            aria-label="Enter desired HD"
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-darkfantasy-neutral text-xs font-sans">Ritual Bonus</label>
+          <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="ritual-bonus" title="Ritual bonus based on SP spent">
+            Ritual Bonus
+          </label>
           <select
+            id="ritual-bonus"
             value={ritualBonus}
             onChange={(e) => setRitualBonus(Number(e.target.value))}
-            className="px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight text-xs"
+            className="px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight text-sm font-darkfantasy"
+            aria-label="Select ritual bonus"
           >
             <option value={0}>None (0 SP)</option>
             <option value={1}>+1 (100 SP)</option>
@@ -246,11 +258,15 @@ function MonsterGenerator({ diceBox, onMonsterGenerated }) {
           </select>
         </div>
         <div className="flex flex-col">
-          <label className="text-darkfantasy-neutral text-xs font-sans">Entity Type</label>
+          <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="entity-type" title="Type of cosmic entity to summon">
+            Entity Type
+          </label>
           <select
+            id="entity-type"
             value={entityType}
             onChange={(e) => setEntityType(e.target.value)}
-            className="px-2 py-1 bg-darkfantasy-primary text-darkfantasy-neutral rounded border border-darkfantasy-primary focus:outline-none focus:border-darkfantasy-highlight text-xs"
+            className="px-3 py-2 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight text-sm font-darkfantasy"
+            aria-label="Select entity type"
           >
             <option value="Aberraciones Mágicas">Aberraciones Mágicas</option>
             <option value="Los Otros">Los Otros</option>
@@ -262,27 +278,27 @@ function MonsterGenerator({ diceBox, onMonsterGenerated }) {
         <button
           onClick={rollMonster}
           disabled={isRolling}
-          className={`bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded font-bold flex items-center ${
-            isRolling ? 'opacity-50 cursor-not-allowed' : 'hover:bg-darkfantasy-secondary/80'
-          }`}
+          className={`bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight ${isRolling ? 'opacity-50 cursor-not-allowed' : ''}`}
+          aria-label="Generate monster"
         >
-          <ZapIcon className="w-5 h-5 mr-2" />
+          <ZapIcon className="w-5 h-5 text-darkfantasy-highlight mr-2" />
           Generate
         </button>
         {result && (
           <button
             onClick={clearResult}
-            className="bg-red-800 text-darkfantasy-neutral py-2 px-4 rounded hover:bg-red-900 font-bold flex items-center"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Clear monster result"
           >
-            <TrashIcon className="w-5 h-5 mr-2" />
+            <TrashIcon className="w-5 h-5 text-darkfantasy-highlight mr-2" />
             Clear
           </button>
         )}
       </div>
-      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex items-center justify-center w-full">
+      <div className="text-darkfantasy-accent text-lg font-darkfantasy font-medium flex-grow flex flex-col items-center justify-center w-full">
         {result ? (
           <div className={getCardClass(result.entityType)}>
-            <h4>{`${result.hd} HD ${result.form} (${result.entityType})`}</h4>
+            <h4 className="font-darkfantasy-heading text-darkfantasy-highlight">{`${result.hd} HD ${result.form} (${result.entityType})`}</h4>
             <div className="section">
               <p><strong>Appendages:</strong> {result.appendages}</p>
             </div>

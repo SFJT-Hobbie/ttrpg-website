@@ -54,44 +54,50 @@ function DungeonExplorationTurnTracker() {
   };
 
   return (
-    <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
-      <h3 className="text-xl font-bold text-darkfantasy-highlight">Dungeon Turn Tracker</h3>
-      <div className="text-darkfantasy-neutral text-lg font-darkfantasy">
-        Turn:
-      </div>
-      <div className="text-darkfantasy-neutral text-3xl font-bold font-darkfantasy">
+    <div className="bg-darkfantasy-tertiary shadow-darkfantasy border-darkfantasy rounded-lg p-6 flex flex-col items-center space-y-4 min-h-[200px] texture-darkfantasy">
+      <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight">Dungeon Turn Tracker</h3>
+      <div className="text-darkfantasy-neutral text-lg font-darkfantasy">Turn:</div>
+      <div className="text-darkfantasy-highlight text-3xl font-darkfantasy font-medium">
         {currentTurn}
       </div>
-      <div className="text-darkfantasy-neutral text-xs text-left font-sans flex flex-col items-center space-y-2">
-        <div>{renderLightSourceStatus()}</div>
+      <div className="text-darkfantasy-neutral text-sm font-darkfantasy flex flex-col items-center space-y-2">
+        <div className={getRemainingTurns() === 0 ? 'text-darkfantasy-accent animate-pulse-darkfantasy' : ''}>
+          {renderLightSourceStatus()}
+        </div>
+        <div>
+          <FlameIcon className={getRemainingTurns() === 0 ? 'w-8 h-8 m-2 text-darkfantasy-highlight' : 'w-8 h-8 m-2 text-darkfantasy-neutral'} />
+        </div>
         <div className="flex space-x-2">
           <button
             onClick={() => toggleLightSource('torch')}
-            className={`py-1 px-3 rounded text-xs font-bold ${
+            className={`py-1 px-3 rounded text-sm font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight ${
               activeLightSource === 'torch'
-                ? 'bg-red-800 text-darkfantasy-neutral'
-                : 'bg-darkfantasy-secondary text-darkfantasy-neutral hover:bg-darkfantasy-secondary/80'
+                ? 'bg-darkfantasy-secondary text-darkfantasy-highlight shadow-darkfantasy-glow'
+                : 'bg-darkfantasy-primary text-darkfantasy-neutral hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow'
             }`}
+            aria-label="Toggle torch"
           >
             Torch
           </button>
           <button
             onClick={() => toggleLightSource('candle')}
-            className={`py-1 px-3 rounded text-xs font-bold ${
+            className={`py-1 px-3 rounded text-sm font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight ${
               activeLightSource === 'candle'
-                ? 'bg-red-800 text-darkfantasy-neutral'
-                : 'bg-darkfantasy-secondary text-darkfantasy-neutral hover:bg-darkfantasy-secondary/80'
+                ? 'bg-darkfantasy-secondary text-darkfantasy-highlight shadow-darkfantasy-glow'
+                : 'bg-darkfantasy-primary text-darkfantasy-neutral hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow'
             }`}
+            aria-label="Toggle candle"
           >
             Candle
           </button>
           <button
             onClick={() => toggleLightSource('lantern')}
-            className={`py-1 px-3 rounded text-xs font-bold ${
+            className={`py-1 px-3 rounded text-sm font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight ${
               activeLightSource === 'lantern'
-                ? 'bg-red-800 text-darkfantasy-neutral'
-                : 'bg-darkfantasy-secondary text-darkfantasy-neutral hover:bg-darkfantasy-secondary/80'
+                ? 'bg-darkfantasy-secondary text-darkfantasy-highlight shadow-darkfantasy-glow'
+                : 'bg-darkfantasy-primary text-darkfantasy-neutral hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow'
             }`}
+            aria-label="Toggle lantern"
           >
             Lantern
           </button>
@@ -100,22 +106,25 @@ function DungeonExplorationTurnTracker() {
       <div className="flex space-x-4">
         <button
           onClick={decrementTurn}
-          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold flex items-center"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={currentTurn === 1}
+          aria-label="Decrement turn"
         >
-          <MinusIcon className="w-5 h-5" />
+          <MinusIcon className="w-5 h-5 text-darkfantasy-highlight" />
         </button>
         <button
           onClick={resetTurn}
-          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold flex items-center"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+          aria-label="Reset turns"
         >
-          <RotateCcwIcon className="w-5 h-5" />
+          <RotateCcwIcon className="w-5 h-5 text-darkfantasy-highlight" />
         </button>
         <button
           onClick={incrementTurn}
-          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-secondary/80 font-bold flex items-center"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+          aria-label="Increment turn"
         >
-          <PlusIcon className="w-5 h-5" />
+          <PlusIcon className="w-5 h-5 text-darkfantasy-highlight" />
         </button>
       </div>
     </div>

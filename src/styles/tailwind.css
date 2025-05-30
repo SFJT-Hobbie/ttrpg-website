@@ -1,68 +1,174 @@
 :root {
-  --darkfantasy-primary: #2a1f1d; /* Dark Ashen Gray */
-  --darkfantasy-secondary: #661318; /* Muted Blood Red */
-  --darkfantasy-tertiary: #3c2f2f; /* Worn Leather Brown */
-  --darkfantasy-highlight: #8a7b5e; /* Dull Gold */
-  --darkfantasy-neutral: #d9c7a5; /* Aged Parchment */
-  --darkfantasy-shadow: rgba(0, 0, 0, 0.5);
-  --font-darkfantasy: "Cinzel", "Times New Roman", serif;
-  --shadow-darkfantasy: 0 4px 8px var(--darkfantasy-shadow);
-  --border-darkfantasy: 1px solid var(--darkfantasy-tertiary);
+  /* Core Palette */
+  --darkfantasy-primary: #1f1a17; /* Charred Obsidian */
+  --darkfantasy-secondary: #4a0e12; /* Clotted Blood */
+  --darkfantasy-tertiary: #2f2a27; /* Weathered Iron */
+  --darkfantasy-accent: #6b5a3e; /* Tarnished Brass */
+  --darkfantasy-highlight: #a68f6a; /* Faded Gold */
+  --darkfantasy-neutral: #d9c7a5; /* Worn Parchment */
+  --darkfantasy-background: #151311; /* Abyssal Void */
+  --darkfantasy-shadow: rgba(0, 0, 0, 0.7);
+  --darkfantasy-glow: rgba(166, 143, 106, 0.2); /* Subtle Gold Glow */
+
+  /* Gradients */
+  --darkfantasy-gradient-primary: linear-gradient(135deg, #1f1a17 0%, #2f2a27 100%);
+  --darkfantasy-gradient-secondary: linear-gradient(135deg, #4a0e12 0%, #2f2a27 100%);
+  --darkfantasy-gradient-highlight: linear-gradient(135deg, #a68f6a 0%, #6b5a3e 100%);
+
+  /* Fonts */
+  --font-darkfantasy: "Jost", "Arial", sans-serif; /* Primary body font */
+  --font-darkfantasy-heading: "Cinzel", "Times New Roman", serif; /* Headers */
+  --font-darkfantasy-alt: "Uncial Antiqua", "Times New Roman", serif; /* Special elements */
+
+  /* Shadows and Borders */
+  --shadow-darkfantasy: 0 4px 12px var(--darkfantasy-shadow), inset 0 0 8px rgba(0, 0, 0, 0.3);
+  --shadow-darkfantasy-glow: 0 0 16px var(--darkfantasy-glow);
+  --border-darkfantasy: 1px solid rgba(107, 90, 62, 0.5);
+  --border-darkfantasy-heavy: 2px solid var(--darkfantasy-accent);
+
+  /* Animations */
+  --transition-darkfantasy: all 0.3s ease-in-out;
 }
 
 @layer base {
+  /* Import Fonts */
+  @font-face {
+    font-family: "Jost";
+    src: url("https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap");
+  }
   @font-face {
     font-family: "Cinzel";
     src: url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap");
   }
+  @font-face {
+    font-family: "Uncial Antiqua";
+    src: url("https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap");
+  }
 
   :root {
-    --background: var(--darkfantasy-primary);
+    --background: var(--darkfantasy-background);
     --foreground: var(--darkfantasy-neutral);
   }
 
   .dark {
-    --background: #1a1513; /* Darker for dark mode */
-    --foreground: #e8d8b0; /* Lighter parchment */
+    --background: #0f0d0c; /* Deeper Void */
+    --foreground: #e8d8b0; /* Aged Ivory */
+  }
+
+  /* Base Styles */
+  body {
+    background: linear-gradient(to bottom, var(--darkfantasy-background), var(--darkfantasy-primary));
+    color: var(--foreground);
+    font-family: var(--font-darkfantasy);
   }
 }
 
 @layer utilities {
+  /* Font Utilities */
   .font-darkfantasy {
     font-family: var(--font-darkfantasy);
   }
+  .font-darkfantasy-heading {
+    font-family: var(--font-darkfantasy-heading);
+  }
+  .font-darkfantasy-alt {
+    font-family: var(--font-darkfantasy-alt);
+  }
+
+  /* Shadow Utilities */
   .shadow-darkfantasy {
     box-shadow: var(--shadow-darkfantasy);
   }
+  .shadow-darkfantasy-glow {
+    box-shadow: var(--shadow-darkfantasy-glow);
+  }
+
+  /* Border Utilities */
   .border-darkfantasy {
     border: var(--border-darkfantasy);
   }
+  .border-darkfantasy-heavy {
+    border: var(--border-darkfantasy-heavy);
+  }
+
+  /* Background Utilities */
   .bg-darkfantasy-primary {
-    background-color: var(--darkfantasy-primary);
+    background: var(--darkfantasy-gradient-primary);
   }
   .bg-darkfantasy-secondary {
-    background-color: var(--darkfantasy-secondary);
+    background: var(--darkfantasy-gradient-secondary);
   }
   .bg-darkfantasy-tertiary {
     background-color: var(--darkfantasy-tertiary);
   }
+  .bg-darkfantasy-background {
+    background: var(--darkfantasy-gradient-primary);
+  }
+
+  /* Text Utilities */
   .text-darkfantasy-highlight {
     color: var(--darkfantasy-highlight);
   }
   .text-darkfantasy-neutral {
     color: var(--darkfantasy-neutral);
   }
+  .text-darkfantasy-accent {
+    color: var(--darkfantasy-accent);
+  }
+
+  /* Hover Effects */
   .hover\:bg-darkfantasy-secondary\/80:hover {
-    background-color: rgba(102, 19, 24, 0.8);
+    background-color: rgba(74, 14, 18, 0.8);
+  }
+  .hover\:bg-darkfantasy-highlight\/50:hover {
+    background-color: rgba(166, 143, 106, 0.5);
   }
   .hover\:text-darkfantasy-highlight:hover {
     color: var(--darkfantasy-highlight);
+    transition: var(--transition-darkfantasy);
   }
-  /* Dark mode variants */
+  .hover\:shadow-darkfantasy-glow:hover {
+    box-shadow: var(--shadow-darkfantasy-glow);
+  }
+
+  /* Dark Mode Variants */
   .dark .bg-darkfantasy-primary {
-    background-color: var(--background);
+    background: linear-gradient(135deg, #0f0d0c 0%, #1f1a17 100%);
+  }
+  .dark .bg-darkfantasy-secondary {
+    background: linear-gradient(135deg, #3a0b0f 0%, #1f1a17 100%);
   }
   .dark .text-darkfantasy-neutral {
     color: var(--foreground);
+  }
+
+  /* Animation Utilities */
+  .animate-pulse-darkfantasy {
+    animation: pulse-darkfantasy 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes pulse-darkfantasy {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Texture Overlay (Optional for parchment or stone-like effect) */
+  .texture-darkfantasy {
+    position: relative;
+    background: var(--darkfantasy-gradient-primary);
+  }
+  .texture-darkfantasy::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAG0lEQVQYV2NkYGD4z8DAwMgABXAGiwF/AAY7AP8fB3kZIL3hAAAAAElFTkSuQmCC') repeat;
+    opacity: 0.05;
+    pointer-events: none;
   }
 }

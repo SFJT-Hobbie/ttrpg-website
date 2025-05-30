@@ -18,24 +18,27 @@ function Logout() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-darkfantasy-primary p-8 rounded-lg shadow-lg w-full max-w-md text-center">
-        <h1 className="text-2xl font-darkfantasy text-darkfantasy-neutral mb-6">
-          Confirm Logout
+    <div className="min-h-screen flex items-center justify-center bg-darkfantasy-background p-8 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/assets/runes-bg.png')] bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className="bg-darkfantasy-tertiary p-8 rounded-lg shadow-darkfantasy w-full max-w-md text-center border-darkfantasy-dark">
+        <h1 className="text-3xl font-darkfantasy-heading text-darkfantasy-accent mb-6 tracking-tight">
+          Sever the Bond
         </h1>
-        <p className="text-darkfantasy-neutral mb-6">
-          Are you sure you want to log out?
+        <p className="text-darkfantasy-neutral text-sm font-darkfantasy mb-6">
+          Are you certain you wish to depart this realm?
         </p>
         <div className="flex justify-center space-x-4">
           <button
             onClick={handleConfirmLogout}
-            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#661318] font-darkfantasy"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Confirm logout"
           >
             Yes
           </button>
           <button
             onClick={handleCancelLogout}
-            className="bg-darkfantasy-tertiary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-[#3c2f2f] font-darkfantasy"
+            className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-6 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Cancel logout"
           >
             No
           </button>

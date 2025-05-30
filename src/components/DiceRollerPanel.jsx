@@ -40,41 +40,53 @@ function DiceRollerPanel({ diceBox, diceColor, setDiceColor }) {
   const dice = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100'];
 
   return (
-    <div className="bg-darkfantasy-tertiary rounded-lg shadow-darkfantasy p-6 flex flex-col items-center space-y-4 min-h-[200px] h-full">
-      <h3 className="text-xl font-bold text-darkfantasy-highlight">Dice Roller</h3>
+    <div className="bg-darkfantasy-tertiary shadow-darkfantasy border-darkfantasy rounded-lg p-6 flex flex-col items-center space-y-4 min-h-[200px] texture-darkfantasy">
+      <h3 className="font-darkfantasy-heading text-xl text-darkfantasy-highlight">Dice Roller</h3>
       <div className="flex items-center space-x-2">
-        <label className="text-darkfantasy-neutral text-xs font-sans">Dice Color</label>
+        <label className="text-darkfantasy-neutral text-sm font-darkfantasy" htmlFor="dice-color">
+          Dice Color
+        </label>
         <input
+          id="dice-color"
           type="color"
           value={diceColor}
           onChange={(e) => setDiceColor(e.target.value)}
-          className="color-picker"
+          className="w-8 h-8 bg-darkfantasy-primary border-darkfantasy rounded focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight cursor-pointer"
+          aria-label="Select dice color"
         />
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full">
         {dice.map((die) => (
           <button
             key={die}
             onClick={() => rollDie(die)}
             disabled={isRolling}
-            className={`bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-3 rounded font-bold flex items-center justify-center text-sm ${
-              isRolling ? 'opacity-50 cursor-not-allowed' : 'hover:bg-darkfantasy-secondary/80'
+            className={`bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-3 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center justify-center text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight ${
+              isRolling ? 'opacity-50 cursor-not-allowed' : ''
             }`}
+            aria-label={`Roll ${die}`}
           >
-            <Dices className="w-4 h-4 mr-1" />
+            <Dices className="w-4 h-4 text-darkfantasy-highlight mr-1" />
             {die}
           </button>
         ))}
       </div>
-      <div className="text-darkfantasy-neutral text-lg font-darkfantasy flex-grow flex items-center justify-center">
-        {result ? `${result.die}: ${result.roll}` : 'Roll a die'}
+      <div className="text-darkfantasy-neutral text-lg font-darkfantasy font-medium flex-grow flex items-center justify-center">
+        {result ? (
+          <span className="text-darkfantasy-highlight animate-pulse-darkfantasy">
+            {result.die}: {result.roll}
+          </span>
+        ) : (
+          'Roll a die'
+        )}
       </div>
       {result && (
         <button
           onClick={clearResult}
-          className="bg-red-800 text-darkfantasy-neutral py-2 px-4 rounded hover:bg-red-900 font-bold flex items-center"
+          className="bg-darkfantasy-secondary text-darkfantasy-neutral py-2 px-4 rounded hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy font-medium flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+          aria-label="Clear dice result"
         >
-          <TrashIcon className="w-5 h-5 mr-2" />
+          <TrashIcon className="w-5 h-5 text-darkfantasy-highlight mr-2" />
           Clear
         </button>
       )}

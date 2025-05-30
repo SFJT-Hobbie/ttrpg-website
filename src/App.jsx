@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, /* useLocation */ } from 'react-router-dom';
 import { AuthProvider } from './AuthContext.jsx';
+import { DiceBoxProvider } from './DiceBoxProvider';
 import Sidebar from './components/Sidebar';
-import DiceTray from './components/Dicetray';
+/* import DiceTray from './components/Dicetray'; */
 import Home from './components/Home';
 import Chapters from './components/Chapters.jsx';
 import Subchapters from './components/Subchapters';
@@ -35,8 +36,8 @@ function ComponentErrorBoundary({ error, resetErrorBoundary }) {
 }
 
 function AppContent() {
-  const location = useLocation();
-  const showDiceTray = location.pathname !== '/';
+/*   const location = useLocation();
+  const showDiceTray = location.pathname !== '/'; */
 
   return (
     <div className="flex min-h-screen w-full">
@@ -94,7 +95,7 @@ function AppContent() {
           <Route path="/logout" element={<Logout />} />
         </Routes>
       </main>
-      {showDiceTray && <DiceTray />}
+      {/* {showDiceTray && <DiceTray />} */}
     </div>
   );
 }
@@ -103,7 +104,9 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <DiceBoxProvider>
         <AppContent />
+      </DiceBoxProvider>
       </BrowserRouter>
     </AuthProvider>
   );

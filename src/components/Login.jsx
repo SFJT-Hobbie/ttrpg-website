@@ -22,18 +22,27 @@ function Login() {
     }
   };
 
-  if (loading) return <div className="text-darkfantasy-neutral text-center">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-darkfantasy-background text-darkfantasy-neutral text-center font-darkfantasy animate-pulse-darkfantasy">
+        Unveiling the annals...
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-darkfantasy-primary p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-darkfantasy text-darkfantasy-neutral mb-6 text-center">
-          Login
+    <div className="min-h-screen flex items-center justify-center p-8 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className="bg-darkfantasy-tertiary p-8 rounded-lg shadow-darkfantasy w-full max-w-md border-darkfantasy-dark">
+        <h1 className="text-3xl font-darkfantasy-heading text-darkfantasy-accent mb-6 text-center tracking-tight">
+          Enter the Realm
         </h1>
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          <p className="text-red-600 text-sm mb-4 text-center font-darkfantasy animate-pulse-darkfantasy">
+            {error}
+          </p>
         )}
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-darkfantasy-neutral text-sm font-darkfantasy mb-2">
               Email
@@ -42,9 +51,10 @@ function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+              placeholder="Your email..."
+              className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
               required
+              aria-label="Email"
             />
           </div>
           <div>
@@ -55,22 +65,28 @@ function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full px-3 py-2 bg-darkfantasy-tertiary text-darkfantasy-neutral rounded border border-darkfantasy focus:outline-none"
+              placeholder="Your password..."
+              className="w-full px-4 py-3 bg-darkfantasy-primary text-darkfantasy-neutral border-darkfantasy rounded focus:outline-none focus:border-darkfantasy-highlight focus:ring-2 focus:ring-darkfantasy-highlight text-sm shadow-darkfantasy transition-all duration-300"
               required
+              aria-label="Password"
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-darkfantasy-secondary text-darkfantasy-neutral py-2 rounded hover:bg-[#3c2f2f] font-darkfantasy"
+            className="w-full bg-darkfantasy-secondary text-darkfantasy-neutral py-3 rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow hover:text-darkfantasy-highlight font-darkfantasy transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-darkfantasy-highlight"
+            aria-label="Login"
           >
-            Login
+            Cross the Threshold
           </button>
         </form>
-        <p className="mt-4 text-center text-darkfantasy-neutral text-sm">
-          Don’t have an account?{' '}
-          <Link to="/register" className="text-darkfantasy-highlight hover:underline">
-            Register
+        <p className="mt-4 text-center text-darkfantasy-neutral text-sm font-darkfantasy">
+          Yet to join the saga?{' '}
+          <Link
+            to="/register"
+            className="text-darkfantasy-highlight hover:text-darkfantasy-accent hover:underline transition-all duration-300"
+            aria-label="Register"
+          >
+            Inscribe Your Name
           </Link>
         </p>
       </div>

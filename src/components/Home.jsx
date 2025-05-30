@@ -1,156 +1,118 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from 'react';
-import DiceBox from '@3d-dice/dice-box';
+import { X } from 'lucide-react';
 import RandomEncounterRoller from './RandomEncounterRoller';
 import ReactionRollGenerator from './ReactionRollGenerator';
 import MoraleCheckRoller from './MoraleCheckRoller';
 import CombatPhaseTracker from './CombatPhaseTracker';
 import DungeonExplorationTurnTracker from './DungeonExplorationTurnTracker';
 import ExperienceCalculator from './ExperienceCalculator';
-import DiceRollerPanel from './DiceRollerPanel';
 import MarchingOrder from './MarchingOrder';
 import SurpriseCheck from './SurpriseCheck';
 import MonsterGenerator from './MonsterGenerator';
 
-function Home() {
-  const [diceBox, setDiceBox] = useState(null);
-  const [diceColor, setDiceColor] = useState('#fb2c36'); // Default color
+function Home({ diceBox }) {
   const [generatedMonsterXP, setGeneratedMonsterXP] = useState(0);
-  const timeoutRef = useRef(null);
 
+  // Define the list of tools with their components and props
+  const tools = [
+    { name: 'Combat Phase Tracker', component: CombatPhaseTracker, props: { diceBox } },
+    { name: 'Dungeon Exploration Turn Tracker', component: DungeonExplorationTurnTracker, props: {} },
+    { name: 'Marching Order', component: MarchingOrder, props: {} },
+    { name: 'Random Encounter Roller', component: RandomEncounterRoller, props: { diceBox } },
+    { name: 'Surprise Check', component: SurpriseCheck, props: { diceBox } },
+    { name: 'Reaction Roll Generator', component: ReactionRollGenerator, props: { diceBox } },
+    { name: 'Morale Check Roller', component: MoraleCheckRoller, props: { diceBox } },
+    { name: 'Experience Calculator', component: ExperienceCalculator, props: { summonedXP: generatedMonsterXP } },
+    { name: 'Monster Generator', component: MonsterGenerator, props: { diceBox, onMonsterGenerated: setGeneratedMonsterXP } },
+  ];
+
+  // State to track which tools are enabled, initialized from localStorage
+  const [enabledTools, setEnabledTools] = useState(() => {
+    const saved = localStorage.getItem('enabledTools');
+    return saved
+      ? JSON.parse(saved)
+      : tools.reduce((acc, tool) => {
+          acc[tool.name] = true;
+          return acc;
+        }, {});
+  });
+
+  // State to show/hide the settings panel
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Save enabledTools to localStorage when it changes
   useEffect(() => {
-    const initializeDiceBox = async () => {
-      const db = new DiceBox('body', {
-        themeColor: diceColor,
-        assetPath: '/assets/',
-        theme: 'rock',
-        scale: 10,
-        gravity: 2,
-        spinForce: 3,
-        throwForce: 5,
-        cameraPosition: { x: 0, y: 100, z: 0 },
-        boxWidth: window.innerWidth,
-        boxHeight: window.innerHeight,
-      });
-
-      try {
-        await db.init();
-        console.log('DiceBox initialized');
-        db.onRollComplete = (results) => {
-          if (results && results.length > 0) {
-            const total = results.reduce((sum, die) => sum + die.value, 0);
-            console.log(`Roll Complete: ${total}`);
-          }
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-          }
-          timeoutRef.current = setTimeout(() => {
-            const canvases = document.body.getElementsByTagName('canvas');
-            Array.from(canvases).forEach((canvas) => {
-              if (canvas.parentNode === document.body) {
-                canvas.style.opacity = '0';
-              }
-            });
-            setTimeout(() => {
-              try {
-                db.clear();
-                Array.from(canvases).forEach((canvas) => {
-                  if (canvas.parentNode === document.body) {
-                    canvas.style.opacity = '1';
-                  }
-                });
-                console.log('Dice faded out and cleared after 10 seconds');
-              } catch (err) {
-                console.warn('DiceBox clear failed:', err);
-                Array.from(canvases).forEach((canvas) => {
-                  if (canvas.parentNode === document.body) {
-                    canvas.style.opacity = '1';
-                  }
-                });
-              }
-            }, 1000);
-          }, 10000);
-        };
-        setDiceBox(db);
-      } catch (err) {
-        console.error('DiceBox initialization failed:', err);
-      }
-    };
-
-    initializeDiceBox();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      if (diceBox) {
-        try {
-          diceBox.clear();
-        } catch (err) {
-          console.warn('DiceBox clear failed:', err);
-        }
-        const canvases = document.body.getElementsByTagName('canvas');
-        Array.from(canvases).forEach((canvas) => {
-          if (canvas.parentNode === document.body) {
-            document.body.removeChild(canvas);
-          }
-        });
-      }
-    };
-  }, []); // Run once on mount
-
-  // Update diceBox themeColor when diceColor changes
-  useEffect(() => {
-    if (diceBox) {
-      diceBox.updateConfig({ themeColor: diceColor });
-    }
-  }, [diceColor, diceBox]);
+    localStorage.setItem('enabledTools', JSON.stringify(enabledTools));
+  }, [enabledTools]);
 
   return (
-    <div className="min-h-screen bg-darkfantasy-primary p-6 font-darkfantasy home">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-darkfantasy-highlight mb-6 text-center">
-          Welcome to the TTRPG Website
+    <div className="min-h-screen p-6 font-darkfantasy relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/assets/runes-bg.png')] bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className="max-w-5xl mx-auto">
+        <h1 className="font-darkfantasy-heading text-4xl font-semibold text-darkfantasy-accent mb-4 text-center tracking-tight">
+          Aristilia RPG
         </h1>
-        <p className="text-darkfantasy-neutral text-center mb-8">
-          Explore rules, manage characters, and more for your game.
+        <p className="text-darkfantasy-neutral text-center mb-4 text-base font-darkfantasy font-medium">
+          Tools for your grimdark RPG odyssey
         </p>
-        <p className="text-darkfantasy-neutral text-center mb-8 font-sans">
-          In this page you will find various tools to enhance your tabletop RPG experience.
+        <p className="text-darkfantasy-neutral/80 text-center mb-8 text-sm font-darkfantasy">
+          Wield these artifacts to navigate a world of dungeons, wilderness, sorcery, and cosmic horror.
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="col-span-1">
-            <CombatPhaseTracker diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
+
+        {/* Settings Button */}
+        <div className="text-center m-2">
+          <button
+            onClick={() => setShowSettings(!showSettings)}
+            className="mb-4 p-2 bg-darkfantasy-secondary text-darkfantasy-neutral rounded border-darkfantasy hover:bg-darkfantasy-highlight/50 hover:shadow-darkfantasy-glow font-darkfantasy text-sm"
+          >
+            {showSettings ? 'Hide Settings' : 'Show Settings'}
+          </button>
+        </div>
+
+        {/* Settings Panel */}
+        {showSettings && (
+          <div className="mb-8 p-4 bg-darkfantasy-tertiary rounded border-darkfantasy-heavy shadow-darkfantasy relative">
+            <button
+              onClick={() => setShowSettings(false)}
+              className="absolute top-2 right-2 text-darkfantasy-neutral hover:text-darkfantasy-highlight"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-xl font-bold text-darkfantasy-highlight font-darkfantasy-heading mb-4">
+              Configure Tools
+            </h2>
+            {tools.map((tool) => (
+              <div key={tool.name} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id={tool.name}
+                  checked={enabledTools[tool.name]}
+                  onChange={() =>
+                    setEnabledTools((prev) => ({
+                      ...prev,
+                      [tool.name]: !prev[tool.name],
+                    }))
+                  }
+                  className="mr-2 accent-darkfantasy-accent"
+                />
+                <label htmlFor={tool.name} className="text-darkfantasy-neutral font-darkfantasy text-sm">
+                  {tool.name}
+                </label>
+              </div>
+            ))}
           </div>
-          <div className="col-span-1">
-            <DungeonExplorationTurnTracker />
-          </div>
-          <div className="col-span-1">
-            <MarchingOrder />
-          </div>
-          <div className="col-span-1">
-            <RandomEncounterRoller diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
-          </div>
-          <div className="col-span-1">
-            <SurpriseCheck diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
-          </div>
-          <div className="col-span-1">
-            <ReactionRollGenerator diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
-          </div>
-          <div className="col-span-1">
-            <MoraleCheckRoller diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
-          </div>
-          <div className="col-span-1">
-            <ExperienceCalculator summonedXP={generatedMonsterXP} />
-          </div>
-          <div className="col-span-1">
-            <DiceRollerPanel diceBox={diceBox} diceColor={diceColor} setDiceColor={setDiceColor} />
-          </div>
-          <div className="col-span-1">
-            <MonsterGenerator
-              diceBox={diceBox} 
-              onMonsterGenerated={setGeneratedMonsterXP}
-            />
-          </div>
+        )}
+
+        {/* Tools Grid */}
+        <div className="grid grid-cols-1 gap-4">
+          {tools.map((tool) =>
+            enabledTools[tool.name] ? (
+              <div key={tool.name} className="col-span-1 flex flex-col h-full min-h-[200px] bg-darkfantasy-tertiary rounded border-darkfantasy shadow-darkfantasy">
+                <tool.component {...tool.props} />
+              </div>
+            ) : null
+          )}
         </div>
       </div>
     </div>
