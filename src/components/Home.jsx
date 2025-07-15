@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react';
 import { X } from 'lucide-react';
 import { DiceBoxContext } from '../DiceBoxContext';
